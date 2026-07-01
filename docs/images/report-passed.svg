@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 690" width="1000" height="690" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#3b5bdb"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1000" height="690" fill="#f5f7fa"/>
+  <rect x="24" y="24" width="952" height="96" rx="16" fill="url(#hero)"/>
+    <text x="48" y="66" font-size="24" font-weight="700" fill="#ffffff">Agent Skill Verification Report</text>
+    <text x="48" y="94" font-size="13.5" fill="#cdd6f4">Skill codebase-understanding v1.0.0  ·  Model mock (offline-deterministic)  ·  Result PASSED</text>
+  <text x="24" y="150" font-size="12" font-weight="600" letter-spacing="0.6" fill="#667085">SUMMARY</text>
+  <rect x="24" y="162" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="40" y="186" font-size="11" fill="#667085" letter-spacing="0.4">OVERALL RESULT</text><g>
+    <rect x="40" y="196" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="73.2" y="211" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g><text x="40" y="238" font-size="11" fill="#667085">All gates satisfied</text>
+  <rect x="265.5" y="162" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="281.5" y="186" font-size="11" fill="#667085" letter-spacing="0.4">PASS RATE</text><text x="281.5" y="217" font-size="24" font-weight="650" fill="#1a2233">100.0%</text><text x="281.5" y="238" font-size="11" fill="#667085">70/70 runs</text>
+  <rect x="507" y="162" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="523" y="186" font-size="11" fill="#667085" letter-spacing="0.4">SCHEMA VALID</text><text x="523" y="217" font-size="24" font-weight="650" fill="#1a2233">100.0%</text>
+  <rect x="748.5" y="162" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="764.5" y="186" font-size="11" fill="#667085" letter-spacing="0.4">CITATION VALID</text><text x="764.5" y="217" font-size="24" font-weight="650" fill="#1a2233">100.0%</text>
+  <rect x="24" y="264" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="40" y="288" font-size="11" fill="#667085" letter-spacing="0.4">UNSUPPORTED CLAIM RATE</text><text x="40" y="319" font-size="24" font-weight="650" fill="#1a2233">0.0%</text><text x="40" y="340" font-size="11" fill="#667085">lower is better</text>
+  <rect x="265.5" y="264" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="281.5" y="288" font-size="11" fill="#667085" letter-spacing="0.4">TOOL ERROR RATE</text><text x="281.5" y="319" font-size="24" font-weight="650" fill="#1a2233">0.0%</text><text x="281.5" y="340" font-size="11" fill="#667085">lower is better</text>
+  <rect x="507" y="264" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="523" y="288" font-size="11" fill="#667085" letter-spacing="0.4">P95 LATENCY</text><text x="523" y="319" font-size="24" font-weight="650" fill="#1a2233">143 ms</text><text x="523" y="340" font-size="11" fill="#667085">estimated/demo</text>
+  <rect x="748.5" y="264" width="227.5" height="88" rx="12" fill="#ffffff" stroke="#e4e7ec"/><text x="764.5" y="288" font-size="11" fill="#667085" letter-spacing="0.4">TOTAL RUNS</text><text x="764.5" y="319" font-size="24" font-weight="650" fill="#1a2233">70</text><text x="764.5" y="340" font-size="11" fill="#667085">7 test cases</text>
+  <text x="24" y="386" font-size="12" font-weight="600" letter-spacing="0.6" fill="#667085">TEST CASES</text>
+  <rect x="24" y="398" width="952" height="242" rx="12" fill="#ffffff" stroke="#e4e7ec"/><rect x="24" y="398" width="952" height="32" rx="12" fill="#fafbfc"/><rect x="24" y="414" width="952" height="16" fill="#fafbfc"/><text x="40" y="419" font-size="11" font-weight="600" fill="#667085">SCENARIO</text><text x="440" y="419" font-size="11" font-weight="600" fill="#667085">KIND</text><text x="540" y="419" font-size="11" font-weight="600" fill="#667085">EXPECTED</text><text x="812" y="419" text-anchor="end" font-size="11" font-weight="600" fill="#667085">PASS</text><text x="900" y="419" font-size="11" font-weight="600" fill="#667085">RESULT</text><text x="40" y="450" font-size="12.5" fill="#1a2233">Which component publishes UserCreatedEvent?</text><g>
+    <rect x="440" y="435" width="59.0" height="22" rx="11" fill="#eef1f6"/>
+    <text x="469.5" y="450" text-anchor="middle" font-size="12.5" font-weight="700" fill="#667085">happy</text>
+  </g><text x="540" y="450" font-size="11.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" fill="#1a2233">answered</text><text x="812" y="450" text-anchor="end" font-size="12.5" fill="#1a2233">100.0%</text><g>
+    <rect x="900" y="435" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="933.2" y="450" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g><line x1="24" y1="460" x2="976" y2="460" stroke="#e4e7ec"/><text x="40" y="480" font-size="12.5" fill="#1a2233">Which service sends the welcome notification?</text><g>
+    <rect x="440" y="465" width="59.0" height="22" rx="11" fill="#eef1f6"/>
+    <text x="469.5" y="480" text-anchor="middle" font-size="12.5" font-weight="700" fill="#667085">happy</text>
+  </g><text x="540" y="480" font-size="11.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" fill="#1a2233">answered</text><text x="812" y="480" text-anchor="end" font-size="12.5" fill="#1a2233">100.0%</text><g>
+    <rect x="900" y="465" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="933.2" y="480" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g><line x1="24" y1="490" x2="976" y2="490" stroke="#e4e7ec"/><text x="40" y="510" font-size="12.5" fill="#1a2233">Which file handles payment authorization?</text><g>
+    <rect x="440" y="495" width="59.0" height="22" rx="11" fill="#eef1f6"/>
+    <text x="469.5" y="510" text-anchor="middle" font-size="12.5" font-weight="700" fill="#667085">happy</text>
+  </g><text x="540" y="510" font-size="11.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" fill="#1a2233">answered</text><text x="812" y="510" text-anchor="end" font-size="12.5" fill="#1a2233">100.0%</text><g>
+    <rect x="900" y="495" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="933.2" y="510" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g><line x1="24" y1="520" x2="976" y2="520" stroke="#e4e7ec"/><text x="40" y="540" font-size="12.5" fill="#1a2233">Non-existent event should not be answered</text><g>
+    <rect x="440" y="525" width="81.2" height="22" rx="11" fill="#eef1f6"/>
+    <text x="480.6" y="540" text-anchor="middle" font-size="12.5" font-weight="700" fill="#667085">negative</text>
+  </g><text x="540" y="540" font-size="11.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" fill="#1a2233">insufficient_evidence</text><text x="812" y="540" text-anchor="end" font-size="12.5" fill="#1a2233">100.0%</text><g>
+    <rect x="900" y="525" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="933.2" y="540" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g><line x1="24" y1="550" x2="976" y2="550" stroke="#e4e7ec"/><text x="40" y="570" font-size="12.5" fill="#1a2233">Non-existent service should not be answered</text><g>
+    <rect x="440" y="555" width="81.2" height="22" rx="11" fill="#eef1f6"/>
+    <text x="480.6" y="570" text-anchor="middle" font-size="12.5" font-weight="700" fill="#667085">negative</text>
+  </g><text x="540" y="570" font-size="11.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" fill="#1a2233">insufficient_evidence</text><text x="812" y="570" text-anchor="end" font-size="12.5" fill="#1a2233">100.0%</text><g>
+    <rect x="900" y="555" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="933.2" y="570" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g><line x1="24" y1="580" x2="976" y2="580" stroke="#e4e7ec"/><text x="40" y="600" font-size="12.5" fill="#1a2233">Ambiguous question with no evidence</text><g>
+    <rect x="440" y="585" width="81.2" height="22" rx="11" fill="#eef1f6"/>
+    <text x="480.6" y="600" text-anchor="middle" font-size="12.5" font-weight="700" fill="#667085">negative</text>
+  </g><text x="540" y="600" font-size="11.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" fill="#1a2233">insufficient_evidence</text><text x="812" y="600" text-anchor="end" font-size="12.5" fill="#1a2233">100.0%</text><g>
+    <rect x="900" y="585" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="933.2" y="600" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g><line x1="24" y1="610" x2="976" y2="610" stroke="#e4e7ec"/><text x="40" y="630" font-size="12.5" fill="#1a2233">Answered question with hallucination guard</text><g>
+    <rect x="440" y="615" width="81.2" height="22" rx="11" fill="#eef1f6"/>
+    <text x="480.6" y="630" text-anchor="middle" font-size="12.5" font-weight="700" fill="#667085">negative</text>
+  </g><text x="540" y="630" font-size="11.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" fill="#1a2233">answered</text><text x="812" y="630" text-anchor="end" font-size="12.5" fill="#1a2233">100.0%</text><g>
+    <rect x="900" y="615" width="66.4" height="22" rx="11" fill="#e6f6ec"/>
+    <text x="933.2" y="630" text-anchor="middle" font-size="12.5" font-weight="700" fill="#087443">PASSED</text>
+  </g>
+</svg>

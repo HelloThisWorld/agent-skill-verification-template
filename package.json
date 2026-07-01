@@ -1,0 +1,40 @@
+{
+  "name": "agent-skill-verification-template",
+  "version": "0.1.0",
+  "description": "A production-oriented template for building AI agent skills that are observable, replayable, and gated by verification metrics.",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=18.18"
+  },
+  "keywords": [
+    "ai-agents",
+    "agent-skills",
+    "claude-skills",
+    "evals",
+    "verification",
+    "observability",
+    "opentelemetry",
+    "prometheus",
+    "ci-quality-gate"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "eval": "tsx src/cli/run-eval.ts",
+    "eval:flaky": "tsx src/cli/run-eval.ts --model mock-flaky --no-gate --output reports/latest-flaky",
+    "clean": "node scripts/clean.mjs"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.5"
+  }
+}

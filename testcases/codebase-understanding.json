@@ -1,0 +1,35 @@
+[
+  {
+    "id": "cu_user_created_event",
+    "name": "Which component publishes UserCreatedEvent?",
+    "kind": "happy",
+    "input": { "question": "Which component publishes the UserCreatedEvent?" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["UserCreatedEvent"],
+    "forbiddenClaims": ["PaymentService", "NotificationService"],
+    "requiredTools": ["repo_search", "read_file"],
+    "expectedCitationFiles": ["fixtures/sample-repo/src/UserEventPublisher.ts"]
+  },
+  {
+    "id": "cu_welcome_notification",
+    "name": "Which service sends the welcome notification?",
+    "kind": "happy",
+    "input": { "question": "Which service sends the welcome notification?" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["welcome"],
+    "forbiddenClaims": ["PaymentService", "UserEventPublisher"],
+    "requiredTools": ["repo_search", "read_file"],
+    "expectedCitationFiles": ["fixtures/sample-repo/src/NotificationService.ts"]
+  },
+  {
+    "id": "cu_payment_authorization",
+    "name": "Which file handles payment authorization?",
+    "kind": "happy",
+    "input": { "question": "Which file handles payment authorization?" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["authorization"],
+    "forbiddenClaims": ["NotificationService", "UserEventPublisher"],
+    "requiredTools": ["repo_search", "read_file"],
+    "expectedCitationFiles": ["fixtures/sample-repo/src/PaymentService.ts"]
+  }
+]

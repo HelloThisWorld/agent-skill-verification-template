@@ -1,0 +1,46 @@
+[
+  {
+    "id": "neg_nonexistent_event",
+    "name": "Non-existent event should not be answered",
+    "kind": "negative",
+    "input": { "question": "Which component publishes the OrderShippedEvent?" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["OrderShippedEvent", "UserEventPublisher"],
+    "requiredTools": ["repo_search"],
+    "expectedCitationFiles": []
+  },
+  {
+    "id": "neg_nonexistent_service",
+    "name": "Non-existent service should not be answered",
+    "kind": "negative",
+    "input": { "question": "Which service manages the shopping cart?" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["ShoppingCartService", "cart"],
+    "requiredTools": ["repo_search"],
+    "expectedCitationFiles": []
+  },
+  {
+    "id": "neg_ambiguous_insufficient",
+    "name": "Ambiguous question with no evidence",
+    "kind": "negative",
+    "input": { "question": "What is the database connection retry strategy?" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["retry", "database"],
+    "requiredTools": ["repo_search"],
+    "expectedCitationFiles": []
+  },
+  {
+    "id": "neg_unsupported_claim_guard",
+    "name": "Answered question with hallucination guard",
+    "kind": "negative",
+    "input": { "question": "Which component publishes the UserCreatedEvent?" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["UserCreatedEvent"],
+    "forbiddenClaims": ["deletes the user", "PaymentService"],
+    "requiredTools": ["repo_search", "read_file"],
+    "expectedCitationFiles": ["fixtures/sample-repo/src/UserEventPublisher.ts"]
+  }
+]

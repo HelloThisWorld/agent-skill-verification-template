@@ -1,0 +1,44 @@
+# OPTIONAL observability stack (DEMO / direction-setting).
+#
+# The default eval works fully offline and writes a static report — you do NOT
+# need this stack to use the template. It shows the intended production topology:
+#
+#     skill runtime  ->  OpenTelemetry Collector  ->  Prometheus  ->  Grafana
+#
+# Today the harness emits OTEL-shaped span JSON and a metrics.prom snapshot; a
+# live OTLP exporter is a roadmap item (see ../docs/observability-model.md).
+# Bring the stack up with:  docker compose -f observability/docker-compose.yml up
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.104.0
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC (for a future real exporter)
+      - "4318:4318"   # OTLP HTTP
+      - "8889:8889"   # Prometheus metrics exposed by the collector
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - otel-collector
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    # Import observability/grafana-dashboard.json manually, or wire up
+    # provisioning. Kept manual to keep this demo compose file small.

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Generated evaluation reports (keep the folder, ignore the contents)
+reports/*
+!reports/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# Coverage
+coverage/
+
+# Environment / secrets (never commit real credentials)
+.env
+.env.*
+!.env.example
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Claude Code local settings (personal, not shared)
+.claude/settings.local.json

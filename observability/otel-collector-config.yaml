@@ -1,0 +1,37 @@
+# OpenTelemetry Collector config (DEMO).
+#
+# Receives OTLP traces/metrics and re-exposes metrics in Prometheus format on
+# :8889 for Prometheus to scrape. The default harness does not yet push OTLP
+# (that is a roadmap item); this config documents the intended wiring so a real
+# exporter can be dropped in without changing the downstream stack.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch: {}
+
+exporters:
+  # Re-expose received metrics for Prometheus to scrape.
+  # No namespace prefix: metric names already start with `skill_`.
+  prometheus:
+    endpoint: 0.0.0.0:8889
+  # Print received telemetry to the collector log (useful while developing).
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus, debug]
