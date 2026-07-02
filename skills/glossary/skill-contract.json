@@ -1,0 +1,48 @@
+{
+  "name": "glossary",
+  "version": "1.0.0",
+  "description": "Given a 'glossary <term>' request, looks the term up on English Wikipedia and returns a source-grounded definition rendered as a web page. Every answer must cite the exact snapshot line that carries the term; unknown terms return insufficient_evidence instead of a guess.",
+  "input": {
+    "description": "A natural-language request of the form 'glossary <term>'.",
+    "fields": [
+      {
+        "name": "question",
+        "type": "string",
+        "required": true,
+        "description": "The request, e.g. 'glossary Mexico'. The term after 'glossary' is looked up."
+      }
+    ]
+  },
+  "output": {
+    "description": "Structured JSON with a status, a short definition, source-grounded claims, and the tool calls used. The polished web-page deliverable is rendered from the same grounded snapshot.",
+    "statusValues": ["answered", "insufficient_evidence", "refused"],
+    "requires": ["status", "answer", "claims", "toolCalls"]
+  },
+  "tools": [
+    {
+      "name": "wikipedia_search",
+      "description": "Search the offline Wikipedia snapshot cache for a term. Returns {title, file, line, text} matches, best-matching article first.",
+      "required": true
+    },
+    {
+      "name": "wikipedia_fetch",
+      "description": "Read an offline Wikipedia snapshot and return its structured article data and citable line.",
+      "required": true
+    }
+  ],
+  "toolOrder": ["wikipedia_search", "wikipedia_fetch"],
+  "citationRequirement": "Every claim must include at least one citation of the form {file, line}. The cited line must share a keyword with the claim, and when answered the cited line must contain the queried term verbatim.",
+  "unsupportedClaimPolicy": "If the skill answers, every claim must carry a valid citation into a Wikipedia snapshot. Terms with no cached snapshot must return insufficient_evidence rather than an invented definition.",
+  "failureBehavior": "When no snapshot matches the term, return status=insufficient_evidence with an empty claims array. Never fabricate a definition, a title, or a citation.",
+  "validationRules": [
+    "Output must match the required JSON schema.",
+    "Every citation must reference an existing snapshot file and an in-range line number.",
+    "Each cited line must support its claim (shared keyword).",
+    "When status is answered, the queried term must appear on a cited line.",
+    "Forbidden/hallucinated claims from the test case must not appear in the output.",
+    "Required tools must be called, and wikipedia_search must precede wikipedia_fetch."
+  ],
+  "promptVersion": "p1",
+  "toolSchemaVersion": "s1",
+  "fixtureRoot": "fixtures/wikipedia"
+}

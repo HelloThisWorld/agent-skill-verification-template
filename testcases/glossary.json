@@ -1,0 +1,642 @@
+[
+  {
+    "id": "gl_Mexico",
+    "name": "glossary Mexico",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Mexico"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Mexico"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Mexico.html"
+    ]
+  },
+  {
+    "id": "gl_South_Africa",
+    "name": "glossary South Africa",
+    "kind": "happy",
+    "input": {
+      "question": "glossary South Africa"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "South Africa"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/South Africa.html"
+    ]
+  },
+  {
+    "id": "gl_Switzerland",
+    "name": "glossary Switzerland",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Switzerland"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Switzerland"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Switzerland.html"
+    ]
+  },
+  {
+    "id": "gl_Canada",
+    "name": "glossary Canada",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Canada"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Canada"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Canada.html"
+    ]
+  },
+  {
+    "id": "gl_Bosnia_and_Herzegovina",
+    "name": "glossary Bosnia and Herzegovina",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Bosnia and Herzegovina"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Bosnia and Herzegovina"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Bosnia and Herzegovina.html"
+    ]
+  },
+  {
+    "id": "gl_Brazil",
+    "name": "glossary Brazil",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Brazil"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Brazil"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Brazil.html"
+    ]
+  },
+  {
+    "id": "gl_Morocco",
+    "name": "glossary Morocco",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Morocco"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Morocco"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Morocco.html"
+    ]
+  },
+  {
+    "id": "gl_United_States",
+    "name": "glossary United States",
+    "kind": "happy",
+    "input": {
+      "question": "glossary United States"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "United States"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/United States.html"
+    ]
+  },
+  {
+    "id": "gl_Australia",
+    "name": "glossary Australia",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Australia"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Australia"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Australia.html"
+    ]
+  },
+  {
+    "id": "gl_Paraguay",
+    "name": "glossary Paraguay",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Paraguay"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Paraguay"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Paraguay.html"
+    ]
+  },
+  {
+    "id": "gl_Germany",
+    "name": "glossary Germany",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Germany"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Germany"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Germany.html"
+    ]
+  },
+  {
+    "id": "gl_Ivory_Coast",
+    "name": "glossary Ivory Coast",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Ivory Coast"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Ivory Coast"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Ivory Coast.html"
+    ]
+  },
+  {
+    "id": "gl_Ecuador",
+    "name": "glossary Ecuador",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Ecuador"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Ecuador"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Ecuador.html"
+    ]
+  },
+  {
+    "id": "gl_Netherlands",
+    "name": "glossary Netherlands",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Netherlands"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Netherlands"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Netherlands.html"
+    ]
+  },
+  {
+    "id": "gl_Japan",
+    "name": "glossary Japan",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Japan"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Japan"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Japan.html"
+    ]
+  },
+  {
+    "id": "gl_Sweden",
+    "name": "glossary Sweden",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Sweden"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Sweden"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Sweden.html"
+    ]
+  },
+  {
+    "id": "gl_Belgium",
+    "name": "glossary Belgium",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Belgium"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Belgium"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Belgium.html"
+    ]
+  },
+  {
+    "id": "gl_Egypt",
+    "name": "glossary Egypt",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Egypt"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Egypt"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Egypt.html"
+    ]
+  },
+  {
+    "id": "gl_Spain",
+    "name": "glossary Spain",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Spain"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Spain"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Spain.html"
+    ]
+  },
+  {
+    "id": "gl_Cape_Verde",
+    "name": "glossary Cape Verde",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Cape Verde"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Cape Verde"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Cape Verde.html"
+    ]
+  },
+  {
+    "id": "gl_France",
+    "name": "glossary France",
+    "kind": "happy",
+    "input": {
+      "question": "glossary France"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "France"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/France.html"
+    ]
+  },
+  {
+    "id": "gl_Norway",
+    "name": "glossary Norway",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Norway"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Norway"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Norway.html"
+    ]
+  },
+  {
+    "id": "gl_Senegal",
+    "name": "glossary Senegal",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Senegal"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Senegal"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Senegal.html"
+    ]
+  },
+  {
+    "id": "gl_Argentina",
+    "name": "glossary Argentina",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Argentina"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Argentina"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Argentina.html"
+    ]
+  },
+  {
+    "id": "gl_Austria",
+    "name": "glossary Austria",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Austria"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Austria"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Austria.html"
+    ]
+  },
+  {
+    "id": "gl_Algeria",
+    "name": "glossary Algeria",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Algeria"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Algeria"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Algeria.html"
+    ]
+  },
+  {
+    "id": "gl_Colombia",
+    "name": "glossary Colombia",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Colombia"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Colombia"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Colombia.html"
+    ]
+  },
+  {
+    "id": "gl_Portugal",
+    "name": "glossary Portugal",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Portugal"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Portugal"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Portugal.html"
+    ]
+  },
+  {
+    "id": "gl_Democratic_Republic_of_the_Congo",
+    "name": "glossary Democratic Republic of the Congo",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Democratic Republic of the Congo"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Democratic Republic of the Congo"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Democratic Republic of the Congo.html"
+    ]
+  },
+  {
+    "id": "gl_England",
+    "name": "glossary England",
+    "kind": "happy",
+    "input": {
+      "question": "glossary England"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "England"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/England.html"
+    ]
+  },
+  {
+    "id": "gl_Croatia",
+    "name": "glossary Croatia",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Croatia"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Croatia"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Croatia.html"
+    ]
+  },
+  {
+    "id": "gl_Ghana",
+    "name": "glossary Ghana",
+    "kind": "happy",
+    "input": {
+      "question": "glossary Ghana"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Ghana"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "wikipedia_search",
+      "wikipedia_fetch"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/wikipedia/Ghana.html"
+    ]
+  }
+]

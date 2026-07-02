@@ -25,6 +25,9 @@
     "test:watch": "vitest",
     "eval": "tsx src/cli/run-eval.ts",
     "eval:flaky": "tsx src/cli/run-eval.ts --model mock-flaky --no-gate --output reports/latest-flaky",
+    "glossary": "tsx src/cli/run-glossary.ts",
+    "glossary:flaky": "tsx src/cli/run-glossary.ts --model glossary-flaky --no-gate --output reports/latest-flaky",
+    "glossary:build-cache": "node scripts/build-glossary-cache.mjs",
     "clean": "node scripts/clean.mjs"
   },
   "dependencies": {

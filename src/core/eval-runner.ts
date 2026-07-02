@@ -17,7 +17,7 @@ import type {
 import { StructuredLogger } from "../telemetry/logger.js";
 import { createRunTelemetry } from "../telemetry/telemetry-context.js";
 import type { Tracer } from "../telemetry/tracing.js";
-import { createDefaultToolRegistry } from "../tools/tool-registry.js";
+import { createToolRegistry } from "../tools/tool-registry.js";
 import { createAdapter, type ModelAdapter, type ModelRunContext } from "../models/model-adapter.js";
 import { validateSchema } from "../validators/schema-validator.js";
 import { validateCitations } from "../validators/citation-validator.js";
@@ -94,13 +94,23 @@ function loadTestCaseFile(relPath: string, defaultKind: "happy" | "negative"): T
   }));
 }
 
-/** Load happy-path cases for a skill plus the shared negative cases. */
+/**
+ * Load happy-path cases for a skill plus its negative cases. A skill may ship its
+ * own `testcases/<skill>-negative.json`; when absent, the shared
+ * `testcases/negative-cases.json` is used. This keeps each skill's negatives
+ * relevant to its own contract (a glossary skill should not be graded against
+ * codebase questions).
+ */
 export function loadTestCases(skillName: string): TestCase[] {
   const happy = loadTestCaseFile(`testcases/${skillName}.json`, "happy");
-  const negativeRel = "testcases/negative-cases.json";
-  const negative = existsSync(resolveFromRoot(negativeRel))
-    ? loadTestCaseFile(negativeRel, "negative")
-    : [];
+  const perSkillNeg = `testcases/${skillName}-negative.json`;
+  const sharedNeg = "testcases/negative-cases.json";
+  const negativeRel = existsSync(resolveFromRoot(perSkillNeg))
+    ? perSkillNeg
+    : existsSync(resolveFromRoot(sharedNeg))
+      ? sharedNeg
+      : null;
+  const negative = negativeRel ? loadTestCaseFile(negativeRel, "negative") : [];
   return [...happy, ...negative];
 }
 
@@ -185,7 +195,7 @@ async function runAttempt(params: AttemptParams): Promise<RunResult> {
     tool_schema_version: versions.toolSchemaVersion,
   });
 
-  const tools = createDefaultToolRegistry(contract.fixtureRoot);
+  const tools = createToolRegistry(contract.name, contract.fixtureRoot);
   const rootSpan = tracer.startSpan("skill.run", {
     "skill.name": contract.name,
     "model.name": modelName,

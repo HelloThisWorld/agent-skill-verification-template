@@ -1,6 +1,8 @@
 import type { RecordedToolCall } from "../core/types.js";
 import { repoSearchTool } from "./repo-search-tool.js";
 import { readFileTool } from "./read-file-tool.js";
+import { wikipediaSearchTool } from "./wikipedia-search-tool.js";
+import { wikipediaFetchTool } from "./wikipedia-fetch-tool.js";
 
 /**
  * Tool contract and a recording registry.
@@ -112,4 +114,25 @@ export function createDefaultToolRegistry(fixtureRoot: string): ToolRegistry {
   registry.register(repoSearchTool);
   registry.register(readFileTool);
   return registry;
+}
+
+/** Registry pre-loaded with the tools available to the `glossary` skill. */
+export function createGlossaryToolRegistry(fixtureRoot: string): ToolRegistry {
+  const registry = new ToolRegistry({ fixtureRoot });
+  registry.register(wikipediaSearchTool);
+  registry.register(wikipediaFetchTool);
+  return registry;
+}
+
+/**
+ * Skill-aware tool registry factory. Each skill gets exactly the tools its
+ * contract declares, all sharing one fixture root and one recording registry.
+ */
+export function createToolRegistry(skillName: string, fixtureRoot: string): ToolRegistry {
+  switch (skillName) {
+    case "glossary":
+      return createGlossaryToolRegistry(fixtureRoot);
+    default:
+      return createDefaultToolRegistry(fixtureRoot);
+  }
 }

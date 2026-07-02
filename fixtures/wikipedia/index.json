@@ -1,0 +1,230 @@
+{
+  "lang": "en",
+  "count": 32,
+  "entries": [
+    {
+      "query": "Mexico",
+      "title": "Mexico",
+      "file": "fixtures/wikipedia/Mexico.html",
+      "url": "https://en.wikipedia.org/wiki/Mexico",
+      "description": "Country in North America"
+    },
+    {
+      "query": "South Africa",
+      "title": "South Africa",
+      "file": "fixtures/wikipedia/South Africa.html",
+      "url": "https://en.wikipedia.org/wiki/South_Africa",
+      "description": "Country in Southern Africa"
+    },
+    {
+      "query": "Switzerland",
+      "title": "Switzerland",
+      "file": "fixtures/wikipedia/Switzerland.html",
+      "url": "https://en.wikipedia.org/wiki/Switzerland",
+      "description": "Country in Central Europe"
+    },
+    {
+      "query": "Canada",
+      "title": "Canada",
+      "file": "fixtures/wikipedia/Canada.html",
+      "url": "https://en.wikipedia.org/wiki/Canada",
+      "description": "Country in North America"
+    },
+    {
+      "query": "Bosnia and Herzegovina",
+      "title": "Bosnia and Herzegovina",
+      "file": "fixtures/wikipedia/Bosnia and Herzegovina.html",
+      "url": "https://en.wikipedia.org/wiki/Bosnia_and_Herzegovina",
+      "description": "Country in Southeast Europe"
+    },
+    {
+      "query": "Brazil",
+      "title": "Brazil",
+      "file": "fixtures/wikipedia/Brazil.html",
+      "url": "https://en.wikipedia.org/wiki/Brazil",
+      "description": "Country in South America"
+    },
+    {
+      "query": "Morocco",
+      "title": "Morocco",
+      "file": "fixtures/wikipedia/Morocco.html",
+      "url": "https://en.wikipedia.org/wiki/Morocco",
+      "description": "Country in North Africa"
+    },
+    {
+      "query": "United States",
+      "title": "United States",
+      "file": "fixtures/wikipedia/United States.html",
+      "url": "https://en.wikipedia.org/wiki/United_States",
+      "description": "Country primarily in North America"
+    },
+    {
+      "query": "Australia",
+      "title": "Australia",
+      "file": "fixtures/wikipedia/Australia.html",
+      "url": "https://en.wikipedia.org/wiki/Australia",
+      "description": "Country in Oceania"
+    },
+    {
+      "query": "Paraguay",
+      "title": "Paraguay",
+      "file": "fixtures/wikipedia/Paraguay.html",
+      "url": "https://en.wikipedia.org/wiki/Paraguay",
+      "description": "Country in South America"
+    },
+    {
+      "query": "Germany",
+      "title": "Germany",
+      "file": "fixtures/wikipedia/Germany.html",
+      "url": "https://en.wikipedia.org/wiki/Germany",
+      "description": "Country in Europe"
+    },
+    {
+      "query": "Ivory Coast",
+      "title": "Ivory Coast",
+      "file": "fixtures/wikipedia/Ivory Coast.html",
+      "url": "https://en.wikipedia.org/wiki/Ivory_Coast",
+      "description": "Country in West Africa"
+    },
+    {
+      "query": "Ecuador",
+      "title": "Ecuador",
+      "file": "fixtures/wikipedia/Ecuador.html",
+      "url": "https://en.wikipedia.org/wiki/Ecuador",
+      "description": "Country in South America"
+    },
+    {
+      "query": "Netherlands",
+      "title": "Netherlands",
+      "file": "fixtures/wikipedia/Netherlands.html",
+      "url": "https://en.wikipedia.org/wiki/Netherlands",
+      "description": "Country in Northwestern Europe and the Caribbean"
+    },
+    {
+      "query": "Japan",
+      "title": "Japan",
+      "file": "fixtures/wikipedia/Japan.html",
+      "url": "https://en.wikipedia.org/wiki/Japan",
+      "description": "Country in East Asia"
+    },
+    {
+      "query": "Sweden",
+      "title": "Sweden",
+      "file": "fixtures/wikipedia/Sweden.html",
+      "url": "https://en.wikipedia.org/wiki/Sweden",
+      "description": "Country in northern Europe"
+    },
+    {
+      "query": "Belgium",
+      "title": "Belgium",
+      "file": "fixtures/wikipedia/Belgium.html",
+      "url": "https://en.wikipedia.org/wiki/Belgium",
+      "description": "Country in Northwestern Europe"
+    },
+    {
+      "query": "Egypt",
+      "title": "Egypt",
+      "file": "fixtures/wikipedia/Egypt.html",
+      "url": "https://en.wikipedia.org/wiki/Egypt",
+      "description": "Country in North Africa"
+    },
+    {
+      "query": "Spain",
+      "title": "Spain",
+      "file": "fixtures/wikipedia/Spain.html",
+      "url": "https://en.wikipedia.org/wiki/Spain",
+      "description": "Country in Southern and Western Europe"
+    },
+    {
+      "query": "Cape Verde",
+      "title": "Cape Verde",
+      "file": "fixtures/wikipedia/Cape Verde.html",
+      "url": "https://en.wikipedia.org/wiki/Cape_Verde",
+      "description": "Island country in West Africa"
+    },
+    {
+      "query": "France",
+      "title": "France",
+      "file": "fixtures/wikipedia/France.html",
+      "url": "https://en.wikipedia.org/wiki/France",
+      "description": "Country primarily in Western Europe"
+    },
+    {
+      "query": "Norway",
+      "title": "Norway",
+      "file": "fixtures/wikipedia/Norway.html",
+      "url": "https://en.wikipedia.org/wiki/Norway",
+      "description": "Country in northern Europe"
+    },
+    {
+      "query": "Senegal",
+      "title": "Senegal",
+      "file": "fixtures/wikipedia/Senegal.html",
+      "url": "https://en.wikipedia.org/wiki/Senegal",
+      "description": "Country in West Africa"
+    },
+    {
+      "query": "Argentina",
+      "title": "Argentina",
+      "file": "fixtures/wikipedia/Argentina.html",
+      "url": "https://en.wikipedia.org/wiki/Argentina",
+      "description": "Country in South America"
+    },
+    {
+      "query": "Austria",
+      "title": "Austria",
+      "file": "fixtures/wikipedia/Austria.html",
+      "url": "https://en.wikipedia.org/wiki/Austria",
+      "description": "Country in Central Europe"
+    },
+    {
+      "query": "Algeria",
+      "title": "Algeria",
+      "file": "fixtures/wikipedia/Algeria.html",
+      "url": "https://en.wikipedia.org/wiki/Algeria",
+      "description": "Country in North Africa"
+    },
+    {
+      "query": "Colombia",
+      "title": "Colombia",
+      "file": "fixtures/wikipedia/Colombia.html",
+      "url": "https://en.wikipedia.org/wiki/Colombia",
+      "description": "Country in South America"
+    },
+    {
+      "query": "Portugal",
+      "title": "Portugal",
+      "file": "fixtures/wikipedia/Portugal.html",
+      "url": "https://en.wikipedia.org/wiki/Portugal",
+      "description": "Country in Southwestern Europe"
+    },
+    {
+      "query": "Democratic Republic of the Congo",
+      "title": "Democratic Republic of the Congo",
+      "file": "fixtures/wikipedia/Democratic Republic of the Congo.html",
+      "url": "https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo",
+      "description": "Country in Central Africa"
+    },
+    {
+      "query": "England",
+      "title": "England",
+      "file": "fixtures/wikipedia/England.html",
+      "url": "https://en.wikipedia.org/wiki/England",
+      "description": "Country within the United Kingdom"
+    },
+    {
+      "query": "Croatia",
+      "title": "Croatia",
+      "file": "fixtures/wikipedia/Croatia.html",
+      "url": "https://en.wikipedia.org/wiki/Croatia",
+      "description": "Country in Central and Southeast Europe"
+    },
+    {
+      "query": "Ghana",
+      "title": "Ghana",
+      "file": "fixtures/wikipedia/Ghana.html",
+      "url": "https://en.wikipedia.org/wiki/Ghana",
+      "description": "Country in West Africa"
+    }
+  ]
+}

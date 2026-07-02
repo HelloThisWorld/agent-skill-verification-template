@@ -40,6 +40,8 @@ export interface ModelAdapter {
 export const SUPPORTED_MODELS = [
   "mock",
   "mock-flaky",
+  "glossary",
+  "glossary-flaky",
   "openai-stub",
   "anthropic-stub",
   "ollama-stub",
@@ -60,6 +62,14 @@ export async function createAdapter(name: string): Promise<ModelAdapter> {
     case "mock-flaky": {
       const { MockFlakyAdapter } = await import("./mock-flaky-adapter.js");
       return new MockFlakyAdapter();
+    }
+    case "glossary": {
+      const { GlossaryAdapter } = await import("./glossary-adapter.js");
+      return new GlossaryAdapter();
+    }
+    case "glossary-flaky": {
+      const { GlossaryFlakyAdapter } = await import("./glossary-adapter.js");
+      return new GlossaryFlakyAdapter();
     }
     case "openai-stub": {
       const { OpenAiStubAdapter } = await import("./openai-adapter.stub.js");

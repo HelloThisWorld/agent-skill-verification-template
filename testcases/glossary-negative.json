@@ -1,0 +1,24 @@
+[
+  {
+    "id": "gl_neg_wakanda",
+    "name": "glossary Wakanda (fictional, no snapshot)",
+    "kind": "negative",
+    "input": { "question": "glossary Wakanda" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["is a country", "capital", "borders"],
+    "requiredTools": ["wikipedia_search"],
+    "expectedCitationFiles": []
+  },
+  {
+    "id": "gl_neg_asgard",
+    "name": "glossary Asgard (fictional, no snapshot)",
+    "kind": "negative",
+    "input": { "question": "glossary Asgard" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["is a country", "population", "located in"],
+    "requiredTools": ["wikipedia_search"],
+    "expectedCitationFiles": []
+  }
+]

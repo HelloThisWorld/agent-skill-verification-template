@@ -16,13 +16,28 @@ import { truncate, VALIDATOR_NAMES } from "./validation-summary.js";
  *     and every `expectedCitationFile` is actually cited.
  */
 
-/** Extract significant keywords: CamelCase identifiers plus words of length >= 4. */
+/**
+ * Extract significant keywords for keyword-based support checking:
+ *   - CamelCase identifiers (strong signal for code),
+ *   - ASCII words of length >= 4,
+ *   - CJK bigrams (adjacent character pairs) so non-space-delimited languages
+ *     like Chinese can be grounded too. A cited line "supports" a CJK claim when
+ *     it shares at least one 2-character sequence with it.
+ * Adding CJK grams is purely additive: ASCII-only text yields no CJK grams, so
+ * the existing codebase-understanding behavior is unchanged.
+ */
 function keywords(text: string): string[] {
   const strong = (text.match(/\b[A-Z][a-z0-9]+(?:[A-Z][a-z0-9]*)+\b/g) ?? []).map((s) =>
     s.toLowerCase(),
   );
   const words = (text.toLowerCase().match(/[a-z][a-z0-9]+/g) ?? []).filter((w) => w.length >= 4);
-  return [...new Set([...strong, ...words])];
+  const cjk: string[] = [];
+  // CJK Ext-A (3400-4DBF), Unified (4E00-9FFF), Compatibility (F900-FAFF).
+  for (const run of text.match(/[㐀-鿿豈-﫿]+/g) ?? []) {
+    if (run.length === 1) cjk.push(run);
+    for (let i = 0; i + 1 < run.length; i++) cjk.push(run.slice(i, i + 2));
+  }
+  return [...new Set([...strong, ...words, ...cjk])];
 }
 
 export function validateCitations(input: ValidatorInput): ValidatorResult {
