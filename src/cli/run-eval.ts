@@ -20,6 +20,11 @@ interface CliOptions {
   threshold: string;
   output: string;
   gate: boolean;
+  llmBaseUrl?: string;
+  llmModel?: string;
+  llmJsonMode?: string;
+  llmMaxRounds?: string;
+  llmTimeoutMs?: string;
 }
 
 function pct(value: number): string {
@@ -47,7 +52,7 @@ function printSummary(summary: EvalSummary, written: WrittenReports): void {
     row("Citation valid rate:", pct(m.citationValidRate)),
     row("Unsupported claim rate:", pct(m.unsupportedClaimRate)),
     row("Tool error rate:", pct(m.toolErrorRate)),
-    row("P95 latency:", `${m.latencyMsP95} ms (estimated)`),
+    row("P95 latency:", `${m.latencyMsP95} ms (${summary.measurement.latencyEstimated ? "estimated" : "measured"})`),
     row("Result:", result),
     row("Report:", `${summary.config.outputDir}/report.html`),
   ];
@@ -75,9 +80,27 @@ async function main(): Promise<void> {
     .option("--threshold <n>", "release-gate pass-rate threshold (0..1)", String(DEFAULT_THRESHOLD))
     .option("--output <dir>", "report output directory", "reports/latest")
     .option("--no-gate", "do not exit non-zero when the release gate fails")
+    .option("--llm-base-url <url>", "live adapter: OpenAI-compatible base URL (env LLM_BASE_URL)")
+    .option("--llm-model <name>", "live adapter: model name/tag (env LLM_MODEL)")
+    .option("--llm-json-mode <mode>", "live adapter: schema | object | off (env LLM_JSON_MODE)")
+    .option("--llm-max-rounds <n>", "live adapter: max model turns per run (env LLM_MAX_ROUNDS)")
+    .option("--llm-timeout-ms <ms>", "live adapter: per-request timeout (env LLM_TIMEOUT_MS)")
     .parse(process.argv);
 
   const opts = program.opts<CliOptions>();
+
+  // CLI overrides for the live adapter are passed down as environment variables
+  // so the adapter has a single source of configuration (see resolveLlmConfig).
+  const llmOverrides: Record<string, string | undefined> = {
+    LLM_BASE_URL: opts.llmBaseUrl,
+    LLM_MODEL: opts.llmModel,
+    LLM_JSON_MODE: opts.llmJsonMode,
+    LLM_MAX_ROUNDS: opts.llmMaxRounds,
+    LLM_TIMEOUT_MS: opts.llmTimeoutMs,
+  };
+  for (const [key, value] of Object.entries(llmOverrides)) {
+    if (value !== undefined) process.env[key] = value;
+  }
 
   const runsPerCase = Number.parseInt(opts.runs, 10);
   const threshold = Number.parseFloat(opts.threshold);
@@ -91,6 +114,14 @@ async function main(): Promise<void> {
   console.log(
     `Running eval — skill=${opts.skill} model=${opts.model} runs=${runsPerCase} threshold=${threshold}`,
   );
+  if (opts.model === "llm") {
+    const { resolveLlmConfig } = await import("../models/llm-adapter.js");
+    const cfg = resolveLlmConfig();
+    console.log(
+      `Live adapter — baseUrl=${cfg.baseUrl} model=${cfg.model || "(server default)"} ` +
+        `jsonMode=${cfg.jsonMode} maxRounds=${cfg.maxRounds} timeoutMs=${cfg.timeoutMs}`,
+    );
+  }
 
   const result = await runEval({
     skillName: opts.skill,

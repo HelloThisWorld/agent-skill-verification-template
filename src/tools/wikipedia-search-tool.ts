@@ -50,6 +50,7 @@ export const wikipediaSearchTool: Tool<{ query: string }, WikipediaSearchResult>
   name: "wikipedia_search",
   description:
     "Search the offline Wikipedia snapshot cache for a term. Returns {title, file, line, text} matches, best-matching article first.",
+  parameters: { query: "the term to search for (string)" },
   execute(args: { query: string }, ctx: ToolContext): WikipediaSearchResult {
     const query = String(args.query ?? "").trim();
     const queryLow = query.toLowerCase();
