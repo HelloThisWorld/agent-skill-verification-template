@@ -1,0 +1,62 @@
+[
+  {
+    "id": "omrt_term_query",
+    "name": "route: what is FX -> glossary",
+    "input": { "question": "what is FX" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["glossary"],
+    "forbiddenClaims": ["decided_by: model"],
+    "requiredTools": ["route_query", "capability_registry"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/CAPABILITIES.md"]
+  },
+  {
+    "id": "omrt_bare_identifier",
+    "name": "route: RateTable (bare identifier) -> glossary",
+    "input": { "question": "RateTable" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["glossary"],
+    "forbiddenClaims": ["decided_by: model"],
+    "requiredTools": ["route_query", "capability_registry"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/CAPABILITIES.md"]
+  },
+  {
+    "id": "omrt_callers",
+    "name": "route: who calls post_entry -> structure",
+    "input": { "question": "who calls post_entry" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["structure"],
+    "forbiddenClaims": ["decided_by: model"],
+    "requiredTools": ["route_query", "capability_registry"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/CAPABILITIES.md"]
+  },
+  {
+    "id": "omrt_dependency_graph",
+    "name": "route: show the dependency graph of the app -> structure",
+    "input": { "question": "show the dependency graph of the app" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["structure"],
+    "forbiddenClaims": ["decided_by: model"],
+    "requiredTools": ["route_query", "capability_registry"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/CAPABILITIES.md"]
+  },
+  {
+    "id": "omrt_natural_language",
+    "name": "route: how are invoices settled for tenants -> search",
+    "input": { "question": "how are invoices settled for tenants" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["search"],
+    "forbiddenClaims": ["decided_by: model"],
+    "requiredTools": ["route_query", "capability_registry"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/CAPABILITIES.md"]
+  },
+  {
+    "id": "omrt_concept_search",
+    "name": "route: find the code that formats tenant invoices -> search",
+    "input": { "question": "find the code that formats tenant invoices" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["search"],
+    "forbiddenClaims": ["decided_by: model"],
+    "requiredTools": ["route_query", "capability_registry"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/CAPABILITIES.md"]
+  }
+]

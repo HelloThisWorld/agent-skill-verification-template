@@ -39,6 +39,7 @@ export const repoSearchTool: Tool<{ query: string }, RepoSearchResult> = {
   name: "repo_search",
   description:
     "Case-insensitive substring search across the fixture repo. Returns {file, line, text} matches.",
+  parameters: { query: "the substring to search for (string)" },
   execute(args: { query: string }, ctx: ToolContext): RepoSearchResult {
     const query = String(args.query ?? "").toLowerCase();
     const matches: SearchMatch[] = [];

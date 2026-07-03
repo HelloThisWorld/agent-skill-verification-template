@@ -1,0 +1,62 @@
+[
+  {
+    "id": "omcg_post_entry_def",
+    "name": "where is post_entry defined",
+    "input": { "question": "where is post_entry defined" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["post_entry"],
+    "forbiddenClaims": [],
+    "requiredTools": ["symbol_definition"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/app/ledger.py"]
+  },
+  {
+    "id": "omcg_convert_def",
+    "name": "where is convert defined",
+    "input": { "question": "where is convert defined" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["convert"],
+    "forbiddenClaims": [],
+    "requiredTools": ["symbol_definition"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/app/rates.py"]
+  },
+  {
+    "id": "omcg_ratetable_def",
+    "name": "where is RateTable defined",
+    "input": { "question": "where is RateTable defined" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["RateTable"],
+    "forbiddenClaims": [],
+    "requiredTools": ["symbol_definition"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/app/rates.py"]
+  },
+  {
+    "id": "omcg_balance_of_def",
+    "name": "where is balance_of defined",
+    "input": { "question": "where is balance_of defined" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["balance_of"],
+    "forbiddenClaims": [],
+    "requiredTools": ["symbol_definition"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/app/ledger.py"]
+  },
+  {
+    "id": "omcg_convert_usage",
+    "name": "who uses convert (real usage edge only)",
+    "input": { "question": "who uses convert" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["convert"],
+    "forbiddenClaims": ["app/audit.py"],
+    "requiredTools": ["symbol_definition", "symbol_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/app/rates.py"]
+  },
+  {
+    "id": "omcg_post_entry_usage",
+    "name": "who uses post_entry (real usage edge only)",
+    "input": { "question": "who uses post_entry" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["post_entry"],
+    "forbiddenClaims": ["app/rates.py"],
+    "requiredTools": ["symbol_definition", "symbol_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/app/ledger.py"]
+  }
+]

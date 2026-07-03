@@ -42,6 +42,10 @@ export const wikipediaFetchTool: Tool<
   name: "wikipedia_fetch",
   description:
     "Read an offline Wikipedia snapshot by path (or query term) and return its structured article data and citable line.",
+  parameters: {
+    path: "snapshot file path exactly as returned by wikipedia_search (preferred)",
+    query: "alternatively, the bare term whose snapshot to read",
+  },
   execute(args, _ctx): WikipediaFetchResult {
     const rel = toRepoRelativePosix(resolveFromRoot(resolvePath(args, _ctx)));
     const html = readFileSync(resolveFromRoot(rel), "utf8");

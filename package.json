@@ -25,9 +25,13 @@
     "test:watch": "vitest",
     "eval": "tsx src/cli/run-eval.ts",
     "eval:flaky": "tsx src/cli/run-eval.ts --model mock-flaky --no-gate --output reports/latest-flaky",
+    "eval:glossary": "tsx src/cli/run-eval.ts --skill glossary --model glossary --output reports/glossary-deterministic",
+    "eval:llm": "tsx src/cli/run-eval.ts --skill glossary --model llm --runs 1 --threshold 0.8 --output reports/glossary-llm",
     "glossary": "tsx src/cli/run-glossary.ts",
     "glossary:flaky": "tsx src/cli/run-glossary.ts --model glossary-flaky --no-gate --output reports/latest-flaky",
     "glossary:build-cache": "node scripts/build-glossary-cache.mjs",
+    "eval:openmind": "tsx src/cli/run-eval.ts --skill openmind-glossary --model openmind --output reports/openmind-glossary && tsx src/cli/run-eval.ts --skill openmind-code-graphs --model openmind --output reports/openmind-code-graphs && tsx src/cli/run-eval.ts --skill openmind-capability-router --model openmind --output reports/openmind-capability-router",
+    "eval:openmind:flaky": "tsx src/cli/run-eval.ts --skill openmind-glossary --model openmind-flaky --no-gate --output reports/openmind-glossary-flaky && tsx src/cli/run-eval.ts --skill openmind-code-graphs --model openmind-flaky --no-gate --output reports/openmind-code-graphs-flaky && tsx src/cli/run-eval.ts --skill openmind-capability-router --model openmind-flaky --no-gate --output reports/openmind-capability-router-flaky",
     "clean": "node scripts/clean.mjs"
   },
   "dependencies": {

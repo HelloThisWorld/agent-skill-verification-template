@@ -1,0 +1,48 @@
+{
+  "name": "openmind-code-graphs",
+  "version": "1.0.0",
+  "description": "Open Mind's deterministic code-graphs skill, run through the Open Mind skill bridge. Given 'where is <symbol> defined' or 'who uses <symbol>', answer from the structure map recovered from the corpus's real code (definition index + name-based call/usage graph). No invented nodes or edges; unknown symbols return insufficient_evidence.",
+  "input": {
+    "description": "A structure question of the form 'where is <symbol> defined' or 'who uses <symbol>'.",
+    "fields": [
+      {
+        "name": "question",
+        "type": "string",
+        "required": true,
+        "description": "The request, e.g. 'where is post_entry defined'."
+      }
+    ]
+  },
+  "output": {
+    "description": "Structured JSON with a status, an answer, claims citing real definition sites, and the tool calls used.",
+    "statusValues": ["answered", "insufficient_evidence", "refused"],
+    "requires": ["status", "answer", "claims", "toolCalls"]
+  },
+  "tools": [
+    {
+      "name": "symbol_definition",
+      "description": "Definition site(s) of a symbol from Open Mind's deterministic structure map (file:line:kind).",
+      "required": true
+    },
+    {
+      "name": "symbol_usage",
+      "description": "Files referencing a symbol, from Open Mind's name-based call/usage graph. Only used for 'who uses' questions.",
+      "required": false
+    }
+  ],
+  "toolOrder": ["symbol_definition", "symbol_usage"],
+  "citationRequirement": "Every claim must cite {file, line} inside the fixture corpus; definition claims must cite the actual definition line (which carries the symbol).",
+  "unsupportedClaimPolicy": "Graph facts are recovered from the code — defs, imports, call sites — never generated. A symbol absent from the corpus must return insufficient_evidence with zero claims.",
+  "failureBehavior": "Unknown symbols return status=insufficient_evidence with an empty claims array. Never invent a definition site, a caller, or an edge.",
+  "validationRules": [
+    "Output must match the required JSON schema.",
+    "Every citation must reference an existing corpus file and an in-range line number.",
+    "Each cited line must support its claim (shared keyword).",
+    "When status is answered, the queried symbol must appear on a cited line and the expected file must be cited.",
+    "Forbidden claims (files the symbol is NOT used in) must not appear in the output.",
+    "symbol_definition must be called, and before symbol_usage when both are used."
+  ],
+  "promptVersion": "p1",
+  "toolSchemaVersion": "s1",
+  "fixtureRoot": "fixtures/openmind-corpus"
+}

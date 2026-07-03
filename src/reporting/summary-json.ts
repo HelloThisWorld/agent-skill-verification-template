@@ -44,6 +44,8 @@ export interface EvalSummary {
   config: { runsPerCase: number; threshold: number; outputDir: string };
   totals: { testCases: number; totalRuns: number; passedRuns: number; failedRuns: number };
   metrics: MetricsSummary;
+  /** Whether latency/token numbers are simulated (mock adapters) or real (live adapters). */
+  measurement: { latencyEstimated: boolean; usageEstimated: boolean };
   result: "PASSED" | "FAILED";
   gateReasons: string[];
   perCase: PerCaseSummary[];
@@ -134,6 +136,13 @@ export function buildSummary(params: BuildSummaryParams): EvalSummary {
     .map(([reason, count]) => ({ reason, count }))
     .sort((a, b) => b.count - a.count || a.reason.localeCompare(b.reason));
 
+  const latencyEstimated = runs.some((r) => r.latencyEstimated);
+  const usageEstimated = runs.some((r) => r.usage.estimated);
+  const measurementNote =
+    latencyEstimated || usageEstimated
+      ? "Latency, token counts, and estimated cost are DEMO/ESTIMATED values produced by the offline mock adapters."
+      : "Latency is measured wall-clock time and token counts are server-reported; cost still uses demo pricing.";
+
   return {
     generatedAt: params.generatedAt,
     skill: { name: contract.name, version: contract.version },
@@ -150,13 +159,14 @@ export function buildSummary(params: BuildSummaryParams): EvalSummary {
       failedRuns: metrics.failedRuns,
     },
     metrics,
+    measurement: { latencyEstimated, usageEstimated },
     result: gate.passed ? "PASSED" : "FAILED",
     gateReasons: gate.reasons,
     perCase,
     failureBreakdown,
     failedRuns,
     notes: [
-      "Latency, token counts, and estimated cost are DEMO/ESTIMATED values produced by the offline mock adapters.",
+      measurementNote,
       "Trace spans are simplified demo telemetry (OpenTelemetry-shaped JSON), not exported to a live collector by default.",
       "Citation validation is keyword-based (non-semantic) for the MVP.",
     ],

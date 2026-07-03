@@ -49,7 +49,7 @@ Final-output inspection is not enough. Reliable skills need:
 - A Claude-style **skill structure** (`skills/codebase-understanding/`, `skills/glossary/`)
 - A machine-readable **skill contract** (input/output/tool/citation rules)
 - A **from-scratch tutorial**: build and verify a second skill (`glossary`) end to end
-- A **model adapter** abstraction (mock, flaky, and stub adapters)
+- A **model adapter** abstraction (mock, flaky, stub — and a **live** OpenAI-compatible adapter)
 - An **eval harness** that runs each case N times
 - **Source-grounding validation** (every claim must cite `file:line`)
 - **Structured logs** (JSONL), **metrics** (Prometheus text), and **trace-like spans**
@@ -542,6 +542,133 @@ See [`skills/glossary/`](skills/glossary/) for the SKILL.md, contract, and rules
 
 ---
 
+## Live model eval: running the same skill against a real model
+
+Everything above verifies the glossary skill with its **deterministic reference
+adapter** — no language model is involved. The `llm` adapter runs the **same
+contract, tools, test cases, validators, and gate against a real model** over
+the OpenAI-compatible chat API. Whether a real model is used is just a
+parameter: `--model glossary` (offline, deterministic) vs `--model llm` (live).
+
+### What each tier tests — and what its result means
+
+| | Deterministic tier (`--model glossary`) | Live tier (`--model llm`) |
+| --- | --- | --- |
+| What produces the answer | Reference adapter (rule-based code) driving the tools | A real LLM deciding which tools to call and writing the answer |
+| What a **PASS** means | The harness, contract, fixtures, tools, and validators are internally correct and reproducible | The model actually honors the skill contract: calls the required tools in order, grounds every claim in a real `file:line`, declines unknown terms |
+| What a **FAIL** means | A regression in the skill/harness code — always a bug to fix | A model reliability gap — data you use to fix prompts, pick models, or set thresholds |
+| Determinism | 100% reproducible; same input → same output | Non-deterministic; run N times and gate on pass **rate** |
+| Latency / tokens | Simulated (labeled `estimated`) | Real wall-clock and server-reported tokens (labeled `measured`) |
+| Where it belongs | CI hard gate (100% expected) | Nightly / pre-release reliability measurement (threshold, e.g. 80–90%) |
+
+The deterministic tier passing does **not** mean "a model will do this well" —
+it means the measuring instrument is sound. The live tier is the measurement.
+
+### Results on this machine, side by side
+
+Deterministic reference adapter (`npm run eval:glossary`) — the measuring
+instrument at 100%, as it must be:
+
+```
+Skill: glossary v1.0.0 · Model: glossary (offline-deterministic)
+34 cases × 10 runs = 340 runs
+Pass rate 100.0% · Schema 100.0% · Citation 100.0% · Tool errors 0.0%
+P95 latency 174 ms (estimated) · Result: PASSED
+```
+
+<p align="center">
+  <img src="docs/images/glossary-deterministic-report.png" alt="Deterministic glossary eval report: PASSED, 100% pass rate across 340 runs" width="860">
+</p>
+
+Live model (`npm run eval:llm`) — gemma-4-26B-A4B (Q4_K_M, 15.8 GB) served by
+llama.cpp on a Radeon RX 7900 XTX, grammar-constrained JSON, ctx 8192:
+
+```
+Skill: glossary v1.0.0 · Model: llm (openai-compatible-live)
+34 cases × 1 run = 34 runs
+Pass rate 97.1% · Schema 100.0% · Citation 97.1% · Tool errors 0.0% · Unsupported claims 0.0%
+P95 latency 32 728 ms (measured) · Tokens 181 746 in / 42 978 out (server-reported)
+Result: FAILED — test case "gl_Croatia" below its 80% floor
+```
+
+<p align="center">
+  <img src="docs/images/glossary-llm-report.png" alt="Live model glossary eval report: 97.1% pass rate, one citation failure, measured latency" width="860">
+</p>
+
+Reading the live result: the model followed the tool contract in every run
+(both required tools, correct order), declined both fictional terms instead of
+fabricating, and grounded 33/34 answers. The one failure is the interesting
+part — for Croatia the model **invented plausible-looking line numbers**
+(`Croatia.html:11` is an HTML `<section>` tag that says nothing about islands)
+instead of copying the citable line from the tool result, and the citation
+validator caught it: `citation_does_not_support_claim`. That is precisely the
+failure class this harness exists to detect, and why the live tier gates on a
+pass-rate threshold instead of expecting 100%.
+
+Getting here was itself a demonstration of the pipeline: the first live run
+scored **5.9%** — replay artifacts showed 30× `required_tool_not_called`
+(the adapter's prompt never told the model which tools the contract requires;
+fixed by rendering the contract's required tools + order into the system
+prompt) and the second run scored **82.3%** with 6 runs looping until
+`LLM_MAX_ROUNDS` (grammar-constrained replies were truncated at `max_tokens`;
+fixed by raising the default and feeding "shorten your reply" back on
+`finish_reason: length`). Every diagnosis came straight from
+`replay-artifacts/` and `structured-events.jsonl`, not guesswork.
+
+### How to run it
+
+Any OpenAI-compatible server works. **Nothing is hardcoded** — endpoint, model,
+and limits all come from env vars (or the `--llm-*` CLI flags):
+
+| Env var | Default | Meaning |
+| --- | --- | --- |
+| `LLM_BASE_URL` | `http://127.0.0.1:8080/v1` | OpenAI-compatible base URL. |
+| `LLM_MODEL` | *(empty)* | Model name/tag. Optional for llama.cpp; required for Ollama / remote. |
+| `LLM_API_KEY` | *(empty)* | Bearer token for remote APIs. |
+| `LLM_JSON_MODE` | `schema` | `schema` (grammar-constrained, llama.cpp) \| `object` \| `off`. Auto-downgrades on HTTP 400. |
+| `LLM_MAX_ROUNDS` | `8` | Max model turns per run. |
+| `LLM_MAX_TOKENS` | `2048` | Generation cap per turn. |
+| `LLM_TIMEOUT_MS` | `180000` | Hard per-request timeout. |
+| `LLM_TEMPERATURE` | `0` | Sampling temperature. |
+
+**Local llama.cpp** (what produced the numbers above):
+
+```powershell
+$env:LLM_SERVER_EXE = "D:\path\to\llama-server.exe"
+$env:LLM_MODEL_PATH = "D:\path\to\model.gguf"
+.\scripts\start-eval-llm.ps1     # starts ONE server: ctx 8192, --parallel 1, 127.0.0.1 only
+npm run eval:llm
+.\scripts\stop-eval-llm.ps1
+```
+
+**Local Ollama**:
+
+```bash
+LLM_BASE_URL=http://127.0.0.1:11434/v1 LLM_MODEL=gemma3:27b npm run eval:llm
+```
+
+**Remote OpenAI-compatible API** (the same adapter — just point it elsewhere):
+
+```bash
+LLM_BASE_URL=https://api.example.com/v1 LLM_MODEL=some-model LLM_API_KEY=sk-... npm run eval:llm
+```
+
+### Resource safety (local runs)
+
+The live tier is designed not to exhaust the host machine:
+
+- the eval runner sends **one request at a time**; the start script pins
+  `--parallel 1`, a small **8K context** (small KV cache — the main VRAM
+  guard), a bounded thread count, and binds to `127.0.0.1` only;
+- every request has a **hard timeout**, every run a **round cap** and a
+  **generation cap** — a wedged server fails one run instead of hanging the
+  eval or pinning the GPU indefinitely;
+- the start script refuses to launch when free RAM is critically low, and
+  `LLM_NGL` lets you trade GPU offload for stability on flaky drivers;
+- run **one** model instance during an eval (do not co-load a second model).
+
+---
+
 ## Architecture
 
 ```
@@ -555,7 +682,7 @@ Skill Contract ─► Model Adapter ─► Eval Harness ─► Validators ─►
 | Layer | Location | Responsibility |
 | --- | --- | --- |
 | Skill contract | `skills/`, `src/core/skill-contract.ts` | What the skill must do (model-independent). |
-| Model adapter | `src/models/` | How a model is called (mock / flaky / stubs). |
+| Model adapter | `src/models/` | How a model is called (mock / flaky / live `llm` / stubs). |
 | Tools | `src/tools/` | `repo_search`, `read_file`, recording registry. |
 | Eval harness | `src/core/eval-runner.ts` | Run each case N×, orchestrate everything. |
 | Validators | `src/validators/` | Schema, citation, unsupported-claim, tool-call. |
@@ -603,7 +730,9 @@ Each run produces:
   → validations → final decision. OpenTelemetry-shaped JSON (demo telemetry; a
   live OTLP exporter is a roadmap item).
 - **Metrics** — `reports/latest/metrics.prom` and `summary.json`. Rates are exact;
-  token/cost/latency are estimated/demo values for the mock adapters.
+  token/cost/latency are estimated/demo values for the mock adapters and real
+  measured/server-reported values for the live `llm` adapter (`summary.json`
+  carries a `measurement` field saying which you are looking at).
 - **Replay artifacts** — one JSON per failed run under `replay-artifacts/`.
 
 The **static report works by default**. The **Grafana stack in `observability/`
@@ -626,14 +755,23 @@ npm run eval -- \
 | Flag | Default | Meaning |
 | --- | --- | --- |
 | `--skill` | `codebase-understanding` | Skill to evaluate. |
-| `--model` | `mock` | `mock` \| `mock-flaky` \| `glossary` \| `glossary-flaky` \| `openai-stub` \| `anthropic-stub` \| `ollama-stub`. |
+| `--model` | `mock` | `mock` \| `mock-flaky` \| `glossary` \| `glossary-flaky` \| `openmind` \| `openmind-flaky` \| `llm` \| `openai-stub` \| `anthropic-stub` \| `ollama-stub`. |
 | `--runs` | `10` | Runs per test case. |
 | `--threshold` | `0.9` | Release-gate pass-rate threshold (0..1). |
 | `--output` | `reports/latest` | Report output directory. |
 | `--no-gate` | (off) | Do not exit non-zero when the gate fails. |
+| `--llm-base-url` | env `LLM_BASE_URL` | Live adapter only: OpenAI-compatible base URL. |
+| `--llm-model` | env `LLM_MODEL` | Live adapter only: model name/tag. |
+| `--llm-json-mode` | env `LLM_JSON_MODE` | Live adapter only: `schema` \| `object` \| `off`. |
+| `--llm-max-rounds` | env `LLM_MAX_ROUNDS` | Live adapter only: max model turns per run. |
+| `--llm-timeout-ms` | env `LLM_TIMEOUT_MS` | Live adapter only: per-request timeout. |
 
-The stub adapters do **not** call real APIs — they throw a clear, documented
-error. The default demo uses the offline `mock` adapter.
+Whether a **real model** is involved is selected by `--model`: the offline
+adapters (`mock`, `glossary`, `openmind`, …) never call one; `--model llm`
+connects to a real model server (see
+[Live model eval](#live-model-eval-running-the-same-skill-against-a-real-model)).
+The remaining stub adapters do **not** call real APIs — they throw a clear,
+documented error. The default demo uses the offline `mock` adapter.
 
 ## npm scripts
 
@@ -643,6 +781,8 @@ error. The default demo uses the offline `mock` adapter.
 | `npm run test` | Run the vitest suite. |
 | `npm run eval` | Run the eval with the **mock** adapter (offline). |
 | `npm run eval:flaky` | Run with the **mock-flaky** adapter to demonstrate failures. |
+| `npm run eval:glossary` | Glossary skill × deterministic reference adapter → `reports/glossary-deterministic`. |
+| `npm run eval:llm` | Glossary skill × **live model** (`llm` adapter) → `reports/glossary-llm`. Needs a running model server. |
 | `npm run glossary` | Run the **glossary** skill eval + render the web-page deliverable (offline). |
 | `npm run glossary:flaky` | Run the glossary skill with the unstable adapter to demonstrate failures. |
 | `npm run glossary:build-cache` | Fetch the Wikipedia snapshot fixtures once (network required). |
@@ -680,7 +820,10 @@ tests/             vitest suites
 Clearly future work, not implemented today:
 
 - Real OpenTelemetry OTLP exporter (replace demo span JSON).
-- Real Anthropic / OpenAI / Ollama adapters (behind the existing stubs).
+- Provider-native adapters (e.g. Anthropic Messages API with native tool use) —
+  the OpenAI-compatible **live adapter is implemented** (`--model llm`, covering
+  llama.cpp / Ollama / OpenAI-compatible remote APIs); the remaining stubs mark
+  the provider-native variants.
 - MCP server integration for tools.
 - Claude Skill packaging examples.
 - Richer **semantic** citation validation (beyond keyword matching).

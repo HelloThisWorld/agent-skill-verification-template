@@ -1,0 +1,47 @@
+{
+  "name": "openmind-capability-router",
+  "version": "1.0.0",
+  "description": "Open Mind's capability router, run through the Open Mind skill bridge in deterministic-floor mode (use_model=False). Given any query, route it to exactly one documented capability (glossary / structure / search) and ground the decision in the corpus's capability registry. The router can never select a capability outside the known set.",
+  "input": {
+    "description": "Any natural-language or identifier query to be routed.",
+    "fields": [
+      {
+        "name": "question",
+        "type": "string",
+        "required": true,
+        "description": "The query to route, e.g. 'who calls post_entry'."
+      }
+    ]
+  },
+  "output": {
+    "description": "Structured JSON whose answer carries the full routing trace (capability, decided_by, deterministic_fallback, reason) and whose claim cites the documented registry line of the chosen capability.",
+    "statusValues": ["answered", "insufficient_evidence", "refused"],
+    "requires": ["status", "answer", "claims", "toolCalls"]
+  },
+  "tools": [
+    {
+      "name": "route_query",
+      "description": "Open Mind's deterministic routing floor: classify the query into one known capability, with a full decision trace.",
+      "required": true
+    },
+    {
+      "name": "capability_registry",
+      "description": "Resolve the chosen capability to its documented registry line in the corpus (the grounding for the decision).",
+      "required": true
+    }
+  ],
+  "toolOrder": ["route_query", "capability_registry"],
+  "citationRequirement": "The routing claim must cite the registry line ({file, line} in CAPABILITIES.md) documenting the chosen capability — a capability outside the documented set has no citable line and fails validation.",
+  "unsupportedClaimPolicy": "The router must never invent a capability: its claim is citable if and only if the chosen capability exists in the documented registry. Runs in deterministic mode, so decided_by must never be 'model'.",
+  "failureBehavior": "The router always returns a valid capability (unroutable queries fall back to 'search'), so the status is always answered; fabricating an unknown capability would surface as an uncited claim and fail the gate.",
+  "validationRules": [
+    "Output must match the required JSON schema.",
+    "The claim must cite an existing registry line that names the chosen capability.",
+    "The expected capability for the test query must appear on the cited line.",
+    "Forbidden claims (invented capabilities, 'decided_by: model') must not appear in the output.",
+    "route_query must be called before capability_registry."
+  ],
+  "promptVersion": "p1",
+  "toolSchemaVersion": "s1",
+  "fixtureRoot": "fixtures/openmind-corpus"
+}

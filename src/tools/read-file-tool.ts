@@ -16,6 +16,7 @@ export interface ReadFileResult extends ToolResult {
 export const readFileTool: Tool<{ path: string }, ReadFileResult> = {
   name: "read_file",
   description: "Read a file from the fixture repo by repo-relative path.",
+  parameters: { path: "repo-relative file path exactly as returned by repo_search" },
   execute(args: { path: string }, _ctx: ToolContext): ReadFileResult {
     const rel = String(args.path ?? "");
     const abs = resolveFromRoot(rel);
