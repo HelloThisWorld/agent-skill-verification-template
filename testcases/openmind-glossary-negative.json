@@ -1,0 +1,24 @@
+[
+  {
+    "id": "omgl_neg_blockchain",
+    "name": "define Blockchain (not in the corpus)",
+    "kind": "negative",
+    "input": { "question": "define Blockchain" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["distributed database", "cryptocurrency", "chain of blocks"],
+    "requiredTools": ["glossary_lookup"],
+    "expectedCitationFiles": []
+  },
+  {
+    "id": "omgl_neg_kubernetes",
+    "name": "what is Kubernetes (not in the corpus)",
+    "kind": "negative",
+    "input": { "question": "what is Kubernetes" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["container orchestration", "pods"],
+    "requiredTools": ["glossary_lookup"],
+    "expectedCitationFiles": []
+  }
+]

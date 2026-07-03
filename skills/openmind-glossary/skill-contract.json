@@ -1,0 +1,48 @@
+{
+  "name": "openmind-glossary",
+  "version": "1.0.0",
+  "description": "Open Mind's deterministic glossary skill, run through the Open Mind skill bridge. Given 'define <term>' (or 'glossary <term>' / 'what is <term>'), resolve the term against the corpus's authoritative sources by exact token and return the VERBATIM definition with file:line provenance, plus a code usage profile when the term is also a code symbol. Unknown terms return insufficient_evidence — never a generated definition.",
+  "input": {
+    "description": "A term lookup request of the form 'define <term>', 'glossary <term>', or 'what is <term>'.",
+    "fields": [
+      {
+        "name": "question",
+        "type": "string",
+        "required": true,
+        "description": "The request, e.g. 'define Ledger'. The term is resolved by exact token, not similarity."
+      }
+    ]
+  },
+  "output": {
+    "description": "Structured JSON with a status, the verbatim definition, source-grounded claims, and the tool calls used.",
+    "statusValues": ["answered", "insufficient_evidence", "refused"],
+    "requires": ["status", "answer", "claims", "toolCalls"]
+  },
+  "tools": [
+    {
+      "name": "glossary_lookup",
+      "description": "Exact-token lookup against Open Mind's deterministic glossary artifact (verbatim definition + file:line provenance).",
+      "required": true
+    },
+    {
+      "name": "term_usage",
+      "description": "Grounded usage profile from Open Mind's structure map (definition sites, referencing files, modules). Only called after a successful lookup.",
+      "required": false
+    }
+  ],
+  "toolOrder": ["glossary_lookup", "term_usage"],
+  "citationRequirement": "Every claim must cite {file, line} inside the fixture corpus. The definition claim must cite the exact source line the definition was lifted from, and when answered the queried term must appear on a cited line.",
+  "unsupportedClaimPolicy": "Definitions are verbatim extractions — never reworded, summarized, or generated. A term with no authoritative in-corpus source must return insufficient_evidence with zero claims.",
+  "failureBehavior": "Unknown terms return status=insufficient_evidence with an empty claims array and an honest 'no authoritative definition found' answer. Never fabricate a definition or a citation.",
+  "validationRules": [
+    "Output must match the required JSON schema.",
+    "Every citation must reference an existing corpus file and an in-range line number.",
+    "Each cited line must support its claim (shared keyword).",
+    "When status is answered, the queried term must appear on a cited line and the expected source file must be cited.",
+    "Forbidden/hallucinated claims from the test case must not appear in the output.",
+    "glossary_lookup must be called, and before term_usage when both are used."
+  ],
+  "promptVersion": "p1",
+  "toolSchemaVersion": "s1",
+  "fixtureRoot": "fixtures/openmind-corpus"
+}

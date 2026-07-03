@@ -1,0 +1,75 @@
+[
+  {
+    "id": "omgl_ledger",
+    "name": "define Ledger (glossary table term)",
+    "input": { "question": "define Ledger" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["Ledger"],
+    "forbiddenClaims": ["blockchain", "cryptocurrency"],
+    "requiredTools": ["glossary_lookup", "term_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/GLOSSARY.md"]
+  },
+  {
+    "id": "omgl_posting",
+    "name": "glossary Posting (glossary table term)",
+    "input": { "question": "glossary Posting" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["Posting"],
+    "forbiddenClaims": [],
+    "requiredTools": ["glossary_lookup", "term_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/GLOSSARY.md"]
+  },
+  {
+    "id": "omgl_ratetable",
+    "name": "define RateTable (term that is also a code symbol)",
+    "input": { "question": "define RateTable" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["RateTable"],
+    "forbiddenClaims": [],
+    "requiredTools": ["glossary_lookup", "term_usage"],
+    "expectedCitationFiles": [
+      "fixtures/openmind-corpus/GLOSSARY.md",
+      "fixtures/openmind-corpus/app/rates.py"
+    ]
+  },
+  {
+    "id": "omgl_audittrail",
+    "name": "define AuditTrail (glossary table term)",
+    "input": { "question": "define AuditTrail" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["AuditTrail"],
+    "forbiddenClaims": [],
+    "requiredTools": ["glossary_lookup", "term_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/GLOSSARY.md"]
+  },
+  {
+    "id": "omgl_fx",
+    "name": "what is FX (definition-line acronym)",
+    "input": { "question": "what is FX" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["FX"],
+    "forbiddenClaims": ["cryptocurrency"],
+    "requiredTools": ["glossary_lookup", "term_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/GLOSSARY.md"]
+  },
+  {
+    "id": "omgl_sla",
+    "name": "what is SLA (definition-line acronym)",
+    "input": { "question": "what is SLA" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["SLA"],
+    "forbiddenClaims": [],
+    "requiredTools": ["glossary_lookup", "term_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/GLOSSARY.md"]
+  },
+  {
+    "id": "omgl_stp",
+    "name": "define STP (README acronym expansion)",
+    "input": { "question": "define STP" },
+    "expectedStatus": "answered",
+    "requiredSymbols": ["STP"],
+    "forbiddenClaims": ["standard temperature"],
+    "requiredTools": ["glossary_lookup", "term_usage"],
+    "expectedCitationFiles": ["fixtures/openmind-corpus/README.md"]
+  }
+]

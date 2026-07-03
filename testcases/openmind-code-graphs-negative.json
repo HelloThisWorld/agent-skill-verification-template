@@ -1,0 +1,24 @@
+[
+  {
+    "id": "omcg_neg_warp",
+    "name": "where is warp_speed defined (symbol absent)",
+    "kind": "negative",
+    "input": { "question": "where is warp_speed defined" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["warp_speed is defined in"],
+    "requiredTools": ["symbol_definition"],
+    "expectedCitationFiles": []
+  },
+  {
+    "id": "omcg_neg_teleport",
+    "name": "who uses teleport_user (symbol absent)",
+    "kind": "negative",
+    "input": { "question": "who uses teleport_user" },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": ["is referenced by"],
+    "requiredTools": ["symbol_definition"],
+    "expectedCitationFiles": []
+  }
+]
