@@ -8,6 +8,11 @@
 ![language](https://img.shields.io/badge/TypeScript-Node.js-informational)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
+Related projects:
+- [Open Mind](https://github.com/HelloThisWorld/open-mind): generates source-traceable codebase artifacts
+- [open-mind-mcp-server](https://github.com/HelloThisWorld/open-mind-mcp-server): exposes those artifacts as MCP tools for agents
+- [agent-skill-verification-template](https://github.com/HelloThisWorld/agent-skill-verification-template): tests agent skills/tools with evals, metrics, traces, and replay artifacts
+
 Most agent skills are evaluated like black boxes: run the prompt, eyeball the
 final answer, and hope it behaves consistently next time. This template treats an
 agent skill as a **production software component** — something you test repeatedly,
