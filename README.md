@@ -3,6 +3,7 @@
 > A production-oriented template for building observable, replayable, and
 > verification-gated AI agent skills.
 
+[![skill-eval](https://github.com/HelloThisWorld/agent-skill-verification-template/actions/workflows/skill-eval.yml/badge.svg?branch=main)](https://github.com/HelloThisWorld/agent-skill-verification-template/actions/workflows/skill-eval.yml)
 ![status](https://img.shields.io/badge/status-MVP-blue)
 ![offline](https://img.shields.io/badge/default%20demo-offline-success)
 ![language](https://img.shields.io/badge/TypeScript-Node.js-informational)
