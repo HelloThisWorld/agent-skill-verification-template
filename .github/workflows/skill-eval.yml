@@ -1,0 +1,45 @@
+name: skill-eval
+
+# Treats the agent skill like a production component: build, test, and run the
+# eval harness. The job FAILS if the pass rate drops below the release-gate
+# threshold (the eval CLI exits non-zero on gate failure). Reports are uploaded
+# as build artifacts on every run.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test
+
+      - name: Run eval (mock adapter, release gate enforced)
+        run: npm run eval
+
+      - name: Upload report bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-eval-report
+          path: reports/latest
+          if-no-files-found: warn
