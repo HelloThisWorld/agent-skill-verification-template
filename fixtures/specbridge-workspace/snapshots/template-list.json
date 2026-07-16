@@ -1,0 +1,294 @@
+{
+  "source": "all",
+  "count": 10,
+  "templates": [
+    {
+      "ref": "builtin:authentication",
+      "id": "authentication",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Authentication",
+      "version": "1.0.0",
+      "description": "A feature spec template for adding or changing authentication or authorization behavior: credential and session flow, authorization boundaries, wrong-credential and lockout behavior, expiry, revocation, replay protection, rate limiting, audit events, and security tests.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "authentication",
+        "authorization",
+        "security",
+        "session",
+        "identity"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:background-job",
+      "id": "background-job",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Background Job",
+      "version": "1.0.0",
+      "description": "A feature spec template for adding or changing an asynchronous background job or worker: trigger, scheduling, retries, idempotency, duplicate delivery, timeouts, dead-letter behavior, cancellation, observability, and tests.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "background-job",
+        "worker",
+        "queue",
+        "async",
+        "scheduling"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:bugfix-regression",
+      "id": "bugfix-regression",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Bugfix Regression",
+      "version": "1.0.0",
+      "description": "A bugfix spec template built around evidence: current vs expected behavior, unchanged behavior, reproduction, root cause, the smallest safe fix, and the regression tests that keep it fixed.",
+      "kind": "bugfix",
+      "supportedModes": [
+        "requirements-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "bugfix",
+        "regression",
+        "debugging",
+        "quality"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:cli-tool",
+      "id": "cli-tool",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Command-Line Tool",
+      "version": "1.0.0",
+      "description": "A feature spec template for adding or changing a command-line tool or command: command surface, arguments and options, exit codes, stdout/stderr behavior, machine-readable output, non-interactive use, platform compatibility, error handling, and tests.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "cli",
+        "command-line",
+        "tooling",
+        "developer-experience",
+        "ux"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:database-migration",
+      "id": "database-migration",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Database Migration",
+      "version": "1.0.0",
+      "description": "A feature spec template for a schema or data migration: the schema change, batched backfill, backward compatibility, zero-downtime deployment order, indexes and locking, rollback limitations, validation, and observability.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "database",
+        "migration",
+        "schema",
+        "sql",
+        "backfill"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:event-driven-service",
+      "id": "event-driven-service",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Event-Driven Service",
+      "version": "1.0.0",
+      "description": "A feature spec template for a producer/consumer change on an event bus, queue, or stream: event contract, delivery semantics, ordering, idempotency, retries, dead-letter behavior, schema evolution, tracing, and rollout.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "events",
+        "messaging",
+        "queue",
+        "streaming",
+        "async"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:performance-optimization",
+      "id": "performance-optimization",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Performance Optimization",
+      "version": "1.0.0",
+      "description": "A feature spec template for a measurable performance improvement: numeric baseline and target, measurement method, workload definition, bottleneck evidence, constraints, regression risks, before/after validation, and rollback.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "performance",
+        "optimization",
+        "profiling",
+        "latency",
+        "benchmarking"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:refactoring",
+      "id": "refactoring",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Refactoring",
+      "version": "1.0.0",
+      "description": "A feature spec template for a behavior-preserving restructuring: an explicit inventory of behavior that must not change, refactor boundaries, an incremental plan with safe checkpoints, regression tests, rollback points, and measurable completion criteria.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "refactoring",
+        "maintainability",
+        "tech-debt",
+        "restructuring",
+        "regression-safety"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:rest-api",
+      "id": "rest-api",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "REST API",
+      "version": "1.0.0",
+      "description": "A feature spec template for adding or changing a REST API endpoint: request/response contract, validation, status codes, authentication, idempotency, pagination, compatibility, observability, and rollout.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "api",
+        "rest",
+        "http",
+        "backend"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    },
+    {
+      "ref": "builtin:security-hardening",
+      "id": "security-hardening",
+      "source": "builtin",
+      "valid": true,
+      "displayName": "Security Hardening",
+      "version": "1.0.0",
+      "description": "A feature spec template for closing a specific security weakness or hardening a trust boundary: threat and assets at risk, abuse cases, required secure behavior, an explicit fail-closed decision, logging without secret leakage, negative tests, and rollout.",
+      "kind": "feature",
+      "supportedModes": [
+        "requirements-first",
+        "design-first",
+        "quick"
+      ],
+      "defaultMode": "requirements-first",
+      "tags": [
+        "security",
+        "hardening",
+        "threat-model",
+        "abuse-case",
+        "defense"
+      ],
+      "compatibility": {
+        "specbridge": ">=0.7.0 <1.0.0",
+        "kiroLayout": "1"
+      },
+      "deprecated": false,
+      "errors": []
+    }
+  ],
+  "diagnostics": []
+}

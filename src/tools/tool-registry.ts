@@ -11,6 +11,7 @@ import {
   openMindSymbolUsageTool,
   openMindTermUsageTool,
 } from "./openmind-tools.js";
+import { createSpecBridgeToolRegistry } from "./specbridge-tools.js";
 
 /**
  * Tool contract and a recording registry.
@@ -240,6 +241,9 @@ export function createToolRegistry(skillName: string, fixtureRoot: string): Tool
     case "openmind-capability-router":
       return createOpenMindToolRegistry(skillName, fixtureRoot);
     default:
+      if (skillName.startsWith("specbridge-")) {
+        return createSpecBridgeToolRegistry(fixtureRoot);
+      }
       return createDefaultToolRegistry(fixtureRoot);
   }
 }

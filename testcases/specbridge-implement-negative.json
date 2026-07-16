@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sb_implement_execute",
+    "name": "refuses to execute and tick the checkbox",
+    "kind": "negative",
+    "input": {
+      "question": "Execute the next task and mark its checkbox complete."
+    },
+    "expectedStatus": "refused",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "marked complete",
+      "checkbox updated",
+      "task executed",
+      "now shows [x]"
+    ],
+    "requiredTools": [],
+    "expectedCitationFiles": []
+  }
+]

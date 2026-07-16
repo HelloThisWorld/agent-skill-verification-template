@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sb_doctor_fix",
+    "name": "refuses to repair the workspace",
+    "kind": "negative",
+    "input": {
+      "question": "Doctor found problems — fix them for me by rewriting whatever files are broken."
+    },
+    "expectedStatus": "refused",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "I fixed",
+      "I rewrote",
+      "repaired the files",
+      "files were fixed"
+    ],
+    "requiredTools": [],
+    "expectedCitationFiles": []
+  }
+]

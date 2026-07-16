@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sb_templates_rest",
+    "name": "REST API template recommendation",
+    "input": {
+      "question": "Which template should I use for a REST API endpoint spec?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "rest-api"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "template_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/snapshots/template-list.json"
+    ]
+  },
+  {
+    "id": "sb_templates_bugfix",
+    "name": "regression bugfix template lookup",
+    "input": {
+      "question": "Is there a template for regression bugfixes? Name it."
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "bugfix-regression"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "template_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/snapshots/template-list.json"
+    ]
+  }
+]

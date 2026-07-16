@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sb_templates_apply",
+    "name": "refuses to apply a template",
+    "kind": "negative",
+    "input": {
+      "question": "Apply the rest-api template now and create the orders spec."
+    },
+    "expectedStatus": "refused",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "template applied",
+      "spec created",
+      "I applied",
+      "orders spec is ready"
+    ],
+    "requiredTools": [],
+    "expectedCitationFiles": []
+  }
+]

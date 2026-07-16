@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sb_verify_sbv026",
+    "name": "the extension-verifier rollup rule",
+    "input": {
+      "question": "Which built-in verification rule covers extension verifier failures, and what does it do?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "SBV026"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "verify_rules"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/snapshots/verify-rules.json"
+    ]
+  },
+  {
+    "id": "sb_verify_first",
+    "name": "the first stable rule id",
+    "input": {
+      "question": "What is the first rule ID in the verification rule registry and what does it check?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "SBV001"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "verify_rules"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/snapshots/verify-rules.json"
+    ]
+  }
+]

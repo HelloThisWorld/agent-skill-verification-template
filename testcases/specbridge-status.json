@@ -1,0 +1,39 @@
+[
+  {
+    "id": "sb_status_one",
+    "name": "workflow status of the managed spec",
+    "input": {
+      "question": "What is the workflow status of the notification-preferences spec?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "DESIGN_DRAFT"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "spec_status"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  },
+  {
+    "id": "sb_status_list",
+    "name": "list every spec with its type",
+    "input": {
+      "question": "List all specs in this workspace with their types and statuses."
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "notification-preferences",
+      "user-authentication"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "spec_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  }
+]

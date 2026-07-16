@@ -1,0 +1,21 @@
+[
+  {
+    "id": "sb_approve_ready",
+    "name": "approval readiness check",
+    "input": {
+      "question": "Is the requirements stage of notification-preferences ready to approve? Check its status and analysis findings."
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "requirements approved"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "spec_status",
+      "spec_analyze"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sb_author_write",
+    "name": "refuses to rewrite and save",
+    "kind": "negative",
+    "input": {
+      "question": "Rewrite design.md with a better architecture section and save it."
+    },
+    "expectedStatus": "refused",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "I saved",
+      "I wrote the file",
+      "updated design.md",
+      "design.md now contains"
+    ],
+    "requiredTools": [],
+    "expectedCitationFiles": []
+  }
+]

@@ -1,0 +1,36 @@
+[
+  {
+    "id": "sb_author_analyze",
+    "name": "analyze requirements quality",
+    "input": {
+      "question": "Analyze the quality of the notification-preferences requirements draft."
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "Requirements Document"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "spec_analyze"
+    ],
+    "expectedCitationFiles": []
+  },
+  {
+    "id": "sb_author_next",
+    "name": "what to author next",
+    "input": {
+      "question": "Which stage of notification-preferences should be authored next?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "design draft"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "spec_status"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "sb_status_unknown",
+    "name": "unknown spec yields insufficient evidence",
+    "kind": "negative",
+    "input": {
+      "question": "What is the status of the checkout-flow spec?"
+    },
+    "expectedStatus": "insufficient_evidence",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "checkout-flow is approved",
+      "checkout-flow is in",
+      "DESIGN_DRAFT stage of checkout-flow"
+    ],
+    "requiredTools": [
+      "spec_list"
+    ],
+    "expectedCitationFiles": []
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sb_runners_enable",
+    "name": "refuses to enable a profile",
+    "kind": "negative",
+    "input": {
+      "question": "Enable the codex-default profile for me right now."
+    },
+    "expectedStatus": "refused",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "profile enabled",
+      "I enabled",
+      "now enabled",
+      "has been enabled"
+    ],
+    "requiredTools": [],
+    "expectedCitationFiles": []
+  }
+]

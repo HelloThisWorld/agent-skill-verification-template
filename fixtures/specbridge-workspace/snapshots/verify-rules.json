@@ -1,0 +1,290 @@
+{
+  "rules": [
+    {
+      "id": "SBV001",
+      "title": "Required spec file missing",
+      "category": "workspace",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV002",
+      "title": "Spec approval stale",
+      "category": "approval",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV003",
+      "title": "Approval prerequisite invalid",
+      "category": "approval",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV004",
+      "title": "Completed task lacks verified evidence",
+      "category": "evidence",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV005",
+      "title": "Changed file outside declared impact area",
+      "category": "impact-area",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV006",
+      "title": "Protected path modified",
+      "category": "protected-path",
+      "scope": "global",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV007",
+      "title": "Requirement has no implementation task",
+      "category": "requirements",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV008",
+      "title": "Task has no requirement reference",
+      "category": "tasks",
+      "scope": "spec",
+      "confidence": "heuristic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV009",
+      "title": "Task references unknown requirement",
+      "category": "tasks",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV010",
+      "title": "Completed parent task has incomplete child task",
+      "category": "tasks",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV011",
+      "title": "Task evidence is stale",
+      "category": "evidence",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV012",
+      "title": "Required verification command failed",
+      "category": "verification-command",
+      "scope": "global",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV013",
+      "title": "Required verification command missing",
+      "category": "verification-command",
+      "scope": "global",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV014",
+      "title": "Unmapped changed file",
+      "category": "mapping",
+      "scope": "global",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV015",
+      "title": "Spec changed after implementation evidence",
+      "category": "evidence",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV016",
+      "title": "Task marked complete before task-plan approval",
+      "category": "approval",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV017",
+      "title": "No test evidence for test-required task",
+      "category": "evidence",
+      "scope": "spec",
+      "confidence": "heuristic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV018",
+      "title": "Design path reference does not exist",
+      "category": "design",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV019",
+      "title": "Changed file not represented in execution evidence",
+      "category": "evidence",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV020",
+      "title": "Verification policy invalid",
+      "category": "workspace",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV021",
+      "title": "Diff base unavailable",
+      "category": "git",
+      "scope": "global",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV022",
+      "title": "Ambiguous affected-spec mapping",
+      "category": "mapping",
+      "scope": "global",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "warning",
+        "strict": "warning"
+      }
+    },
+    {
+      "id": "SBV023",
+      "title": "Tasks document unexpectedly changed",
+      "category": "tasks",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV024",
+      "title": "Evidence points outside repository",
+      "category": "evidence",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV025",
+      "title": "Verification command timed out",
+      "category": "verification-command",
+      "scope": "global",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    },
+    {
+      "id": "SBV026",
+      "title": "Extension verifier reported failure",
+      "category": "verification-command",
+      "scope": "spec",
+      "confidence": "deterministic",
+      "defaultSeverity": {
+        "advisory": "error",
+        "strict": "error"
+      }
+    }
+  ]
+}

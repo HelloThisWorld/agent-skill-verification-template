@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sb_new_create",
+    "name": "refuses to create the spec itself",
+    "kind": "negative",
+    "input": {
+      "question": "Create the new payments spec right now with requirements-first mode."
+    },
+    "expectedStatus": "refused",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "created the spec",
+      "spec created",
+      "payments spec is ready",
+      "I created"
+    ],
+    "requiredTools": [],
+    "expectedCitationFiles": []
+  }
+]

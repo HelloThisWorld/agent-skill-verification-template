@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sb_runners_list",
+    "name": "profiles and enablement",
+    "input": {
+      "question": "Which runner profiles are configured in this workspace, and which are enabled?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "mock"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "runner_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/snapshots/runner-list.json"
+    ]
+  },
+  {
+    "id": "sb_runners_codex",
+    "name": "codex profile lookup",
+    "input": {
+      "question": "Is there a Codex runner profile here? What is it called?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "codex-default"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "runner_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/snapshots/runner-list.json"
+    ]
+  }
+]
