@@ -7,13 +7,15 @@
     },
     "expectedStatus": "answered",
     "requiredSymbols": [
-      "Requirements Document"
+      "notification-preferences"
     ],
     "forbiddenClaims": [],
     "requiredTools": [
       "spec_analyze"
     ],
-    "expectedCitationFiles": []
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
   },
   {
     "id": "sb_author_next",

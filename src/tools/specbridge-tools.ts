@@ -78,17 +78,27 @@ export const specbridgeDoctorTool: Tool<Record<string, never>, SpecBridgeToolRes
   description: "Read-only SpecBridge workspace health report (doctor --json): layout, specs, round-trip safety.",
   parameters: {},
   execute(_args, ctx) {
-    const data = cliJson(ctx, "doctor") as { healthy: boolean };
+    const raw = cliJson(ctx, "doctor") as {
+      healthy: boolean;
+      roundTripSafe: boolean;
+      specs: Array<{ name: string; type: string }>;
+    };
     const workspaceLine = citeLine(ctx, "WORKSPACE.md", "workspace: healthy");
-    if (!workspaceLine.text.includes(`healthy ${data.healthy}`)) {
+    if (!workspaceLine.text.includes(`healthy ${raw.healthy}`)) {
       throw new Error("WORKSPACE.md workspace line drifted — re-run scripts/build-specbridge-fixture.mjs");
     }
+    const data = {
+      healthy: raw.healthy,
+      roundTripSafe: raw.roundTripSafe,
+      specCount: raw.specs.length,
+      specs: raw.specs.map((spec) => ({ name: spec.name, type: spec.type })),
+    };
     const evidence = [
       workspaceLine,
       citeLine(ctx, "WORKSPACE.md", "- spec notification-preferences"),
       citeLine(ctx, "WORKSPACE.md", "- spec user-authentication"),
     ];
-    return { summary: `doctor: ${compact(data, 400)}`, data, evidence };
+    return { summary: `doctor: healthy=${data.healthy}, roundTripSafe=${data.roundTripSafe}, specs=${data.specCount}`, data, evidence };
   },
 };
 
@@ -128,11 +138,19 @@ export const specbridgeSpecAnalyzeTool: Tool<{ spec: string }, SpecBridgeToolRes
   description: "Deterministic offline spec analysis: structural findings per stage (never modifies anything).",
   parameters: { spec: "spec name exactly as shown by spec_list" },
   execute(args, ctx) {
-    const data = cliJson(ctx, "spec", "analyze", args.spec) as { errorCount: number };
+    const raw = cliJson(ctx, "spec", "analyze", args.spec) as {
+      errorCount: number;
+      warningCount: number;
+      failed: boolean;
+    };
+    const data = { errorCount: raw.errorCount, warningCount: raw.warningCount, failed: raw.failed };
     return {
-      summary: `analysis(${args.spec}): ${compact(data, 600)}`,
+      summary: `analysis(${args.spec}): ${data.errorCount} errors, ${data.warningCount} warnings`,
       data,
-      evidence: [citeLine(ctx, `.kiro/specs/${args.spec}/requirements.md`, "#")],
+      evidence: [
+        citeLine(ctx, "WORKSPACE.md", `- spec ${args.spec}`),
+        citeLine(ctx, `.kiro/specs/${args.spec}/requirements.md`, "#"),
+      ],
     };
   },
 };

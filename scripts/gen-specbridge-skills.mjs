@@ -176,9 +176,9 @@ const SKILLS = [
         name: "analyze requirements quality",
         question: "Analyze the quality of the notification-preferences requirements draft.",
         expectedStatus: "answered",
-        requiredSymbols: ["Requirements Document"],
+        requiredSymbols: ["notification-preferences"],
         requiredTools: ["spec_analyze"],
-        expectedCitationFiles: [],
+        expectedCitationFiles: [WORKSPACE],
       },
       {
         id: "sb_author_next",
