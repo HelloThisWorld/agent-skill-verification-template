@@ -11,6 +11,10 @@ on:
   push:
     tags:
       - "v*.*.*"
+    # TEMPORARY (pre-merge validation): run the build-only dry run on pushes
+    # to the release feature branch. Remove after the first successful run.
+    branches:
+      - feature/cli-and-github-release
   workflow_dispatch:
 
 # Least privilege by default; only the `release` job below gets write access.
@@ -40,7 +44,7 @@ jobs:
           cache: npm
 
       - name: Validate tag format and package-version match
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         run: node scripts/release-check.mjs --tag-only --tag "$GITHUB_REF_NAME"
 
       - name: Install dependencies (locked)
