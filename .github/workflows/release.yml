@@ -11,10 +11,6 @@ on:
   push:
     tags:
       - "v*.*.*"
-    # TEMPORARY (pre-merge validation): run the build-only dry run on pushes
-    # to the release feature branch. Remove after the first successful run.
-    branches:
-      - feature/cli-and-github-release
   workflow_dispatch:
 
 # Least privilege by default; only the `release` job below gets write access.
