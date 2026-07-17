@@ -1,0 +1,26 @@
+# Example project configuration for agent-skill-verifier.
+# Copy to your project root as `skill-verification.yaml` (or pass --config).
+# Precedence: CLI flags > this file > built-in defaults.
+schemaVersion: "1.0.0"
+
+skill:
+  path: ./fixtures/valid-skill
+
+evaluation:
+  cases: ./fixtures/evals.yaml
+  runs: 10
+  threshold: 0.90
+  seed: 12345
+  # timeoutMs: 600000
+
+adapter:
+  # mock (offline, default) | mock-flaky | llm (env-configured) | ...
+  name: mock
+
+output:
+  directory: .agent-skill-verification
+  formats: [json, junit, html, replay]
+
+qualityGate:
+  failOnThreshold: true
+  maximumFlakyRate: 0.05
