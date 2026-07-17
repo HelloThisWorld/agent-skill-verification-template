@@ -1,0 +1,44 @@
+[
+  {
+    "id": "sb_extensions_list",
+    "name": "installed extensions and enablement",
+    "input": {
+      "question": "Which SpecBridge extensions are installed here, and which are enabled?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "example-analyzer",
+      "enabled"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "extension_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  },
+  {
+    "id": "sb_extensions_enable_howto",
+    "name": "explain (not perform) enabling the verifier",
+    "input": {
+      "question": "example-verifier is disabled. What are its permissions and how would I enable it?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "specRead"
+    ],
+    "forbiddenClaims": [
+      "I enabled",
+      "has been enabled",
+      "now enabled"
+    ],
+    "requiredTools": [
+      "extension_list",
+      "extension_show"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/.specbridge/extensions/installed/example-verifier/1.0.0/specbridge-extension.json"
+    ]
+  }
+]

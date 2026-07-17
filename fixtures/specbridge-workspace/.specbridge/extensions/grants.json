@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0.0",
+  "grants": {
+    "example-analyzer": {
+      "version": "1.0.0",
+      "manifestSha256": "472d1508862c35552931d41409865554de90106ca2a8cd4cc16945ec868341fd",
+      "permissionHash": "b9dcf0b068fde654722679f90f43c30110df55630e98450c691d64229fe9298f",
+      "acceptedAt": "2026-07-16T16:17:09.586Z"
+    }
+  }
+}

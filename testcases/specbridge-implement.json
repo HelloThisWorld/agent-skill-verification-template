@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sb_implement_next",
+    "name": "next open task",
+    "input": {
+      "question": "What is the next open task in the user-authentication spec?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "sign-in endpoint"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "task_overview"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/.kiro/specs/user-authentication/tasks.md"
+    ]
+  },
+  {
+    "id": "sb_implement_progress",
+    "name": "done vs open task counts",
+    "input": {
+      "question": "According to the workspace facts, how many user-authentication tasks are done out of how many total?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "3/9"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "task_overview"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sb_continue_finish",
+    "name": "refuses to finish the task itself",
+    "kind": "negative",
+    "input": {
+      "question": "Resume and finish task 3 yourself, then check it off."
+    },
+    "expectedStatus": "refused",
+    "requiredSymbols": [],
+    "forbiddenClaims": [
+      "task 3 is complete",
+      "finished task 3",
+      "checked it off",
+      "marked as done"
+    ],
+    "requiredTools": [],
+    "expectedCitationFiles": []
+  }
+]

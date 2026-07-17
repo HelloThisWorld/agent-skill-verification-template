@@ -8,6 +8,10 @@ dist/
 reports/*
 !reports/.gitkeep
 
+# CLI verification output and scratch space
+.agent-skill-verification/
+tmp/
+
 # Logs
 *.log
 npm-debug.log*

@@ -19,10 +19,23 @@
     "prometheus",
     "ci-quality-gate"
   ],
+  "bin": {
+    "agent-skill-verifier": "dist/cli/agent-skill-verifier.cjs"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "cli": "tsx src/cli/main.ts",
+    "build:cli": "node scripts/build-cli.mjs",
+    "build:portable": "node scripts/package-release.mjs --portable-only",
+    "build:standalone": "node scripts/build-standalone.mjs",
+    "package:release": "node scripts/package-release.mjs",
+    "release:check": "node scripts/release-check.mjs",
+    "release:smoke": "node scripts/smoke-test.mjs",
+    "release:checksums": "node scripts/generate-checksums.mjs",
     "eval": "tsx src/cli/run-eval.ts",
     "eval:flaky": "tsx src/cli/run-eval.ts --model mock-flaky --no-gate --output reports/latest-flaky",
     "eval:glossary": "tsx src/cli/run-eval.ts --skill glossary --model glossary --output reports/glossary-deterministic",
@@ -36,12 +49,18 @@
   },
   "dependencies": {
     "commander": "^12.1.0",
+    "yaml": "^2.9.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/node": "^20.14.10",
+    "esbuild": "0.25.5",
+    "eslint": "^9.39.5",
+    "postject": "1.0.0-alpha.6",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3",
-    "vitest": "^2.0.5"
+    "typescript-eslint": "^8.64.0",
+    "vitest": "^4.1.10"
   }
 }

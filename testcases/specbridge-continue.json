@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sb_continue_done",
+    "name": "which tasks are completed",
+    "input": {
+      "question": "Which tasks in user-authentication are already completed?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "credential validation"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "task_overview"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/.kiro/specs/user-authentication/tasks.md"
+    ]
+  },
+  {
+    "id": "sb_continue_where",
+    "name": "where to resume",
+    "input": {
+      "question": "Where should I resume work in the user-authentication spec? Name its next open task."
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "sign-in endpoint"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "task_overview"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/.kiro/specs/user-authentication/tasks.md"
+    ]
+  }
+]

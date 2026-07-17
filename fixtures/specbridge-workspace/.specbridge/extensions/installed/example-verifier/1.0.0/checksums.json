@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "algorithm": "sha256",
+  "files": {
+    "LICENSE": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1",
+    "README.md": "124981ad3414558181af38a45cf0f7104eb71d95818b1ee079ba0c6180adfc96",
+    "dist/extension.cjs": "ab2d31ca785bd3804d943821ddfe5897ed64c06776b8b3b5bd21e59ff8de13ea",
+    "specbridge-extension.json": "b7a4c0381cfe341eeb876e243cffe6d8758c35a7702403a24e312e2332b058d5"
+  }
+}

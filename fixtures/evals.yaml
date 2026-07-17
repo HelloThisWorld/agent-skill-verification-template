@@ -1,0 +1,41 @@
+# Evaluation cases for the `valid-skill` fixture (used by CLI smoke tests).
+# Cases may be written in YAML (this file) or JSON; both use the same schema.
+cases:
+  - id: case-001
+    name: Locate the invoice creation service
+    kind: happy
+    input:
+      question: Where is InvoiceService implemented and what does createInvoice do?
+    expectedStatus: answered
+    requiredSymbols:
+      - InvoiceService
+    requiredTools:
+      - repo_search
+      - read_file
+    expectedCitationFiles:
+      - fixtures/valid-skill/corpus/InvoiceService.ts
+
+  - id: case-002
+    name: Locate the card settlement gateway
+    kind: happy
+    input:
+      question: Where is PaymentGateway implemented and how does chargeCard work?
+    expectedStatus: answered
+    requiredSymbols:
+      - PaymentGateway
+    requiredTools:
+      - repo_search
+      - read_file
+    expectedCitationFiles:
+      - fixtures/valid-skill/corpus/PaymentGateway.ts
+
+  - id: case-003
+    name: Refuse to invent answers about missing components
+    kind: negative
+    input:
+      question: Does the QuantumRouter stream blockchain telemetry snapshots?
+    expectedStatus: insufficient_evidence
+    requiredTools:
+      - repo_search
+    forbiddenClaims:
+      - QuantumRouter

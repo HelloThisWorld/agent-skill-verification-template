@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sb_doctor_health",
+    "name": "workspace health summary",
+    "input": {
+      "question": "Is this a healthy Kiro-compatible workspace? Summarize what doctor reports."
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "healthy"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "workspace_doctor"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  },
+  {
+    "id": "sb_doctor_census",
+    "name": "spec census from doctor",
+    "input": {
+      "question": "How many specs does doctor see in this workspace, and are round trips safe?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "specs 2"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "workspace_doctor"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  }
+]

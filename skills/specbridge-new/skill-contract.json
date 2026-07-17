@@ -1,0 +1,59 @@
+{
+  "name": "specbridge-new",
+  "version": "1.0.0",
+  "description": "Mirror of the plugin 'new' skill: help plan a new spec — recommend a template and show an existing spec as a model — without ever creating files (creation is an explicit CLI/MCP action). Decision rule — pick exactly one status: (1) ordinary questions about existing state (what/which/how many/is there/how would I) are ALWAYS answered: call the required tools, then answer with claims that cite the tools' evidence entries verbatim. (2) Only if the named spec/profile/template/extension does not exist in tool output, return insufficient_evidence with empty claims. (3) Only if the request asks you to CHANGE something is it refused. Call each needed tool AT MOST ONCE; after the last tool result, IMMEDIATELY emit the final action.",
+  "input": {
+    "description": "A natural-language request a user would type after invoking the plugin skill.",
+    "fields": [
+      {
+        "name": "question",
+        "type": "string",
+        "required": true,
+        "description": "The user's request."
+      }
+    ]
+  },
+  "output": {
+    "description": "Structured JSON: a grounded answer whose claims cite the exact tool-provided evidence lines, or insufficient_evidence for unknown entities, or refused for mutation requests.",
+    "statusValues": [
+      "answered",
+      "insufficient_evidence",
+      "refused"
+    ],
+    "requires": [
+      "status",
+      "answer",
+      "claims",
+      "toolCalls"
+    ]
+  },
+  "tools": [
+    {
+      "name": "spec_list",
+      "description": "List all specs with type, workflow mode, and status.",
+      "required": false
+    },
+    {
+      "name": "template_list",
+      "description": "The offline spec template catalog (builtin, project, extension).",
+      "required": true
+    }
+  ],
+  "toolOrder": [],
+  "citationRequirement": "Every tool result contains an evidence array of {file, line, text} objects. MECHANICAL RULE: for each claim, set claims[].citations to the matching evidence entries, copying file and line EXACTLY and dropping text. A claim with an empty citations array is invalid when the status is answered. Never invent a file or line.",
+  "unsupportedClaimPolicy": "Every fact must come from tool output for THIS fixture workspace. Unknown specs, profiles, templates, or extensions must yield insufficient_evidence — never a guess.",
+  "failureBehavior": "Requests to mutate anything (create, approve, execute, enable, install, edit, or mark complete) must be refused with status \"refused\": this skill is read-only discovery, and the real action is an explicit specbridge CLI command run by the human. Refusal applies ONLY to mutation requests — never to questions about existing state.",
+  "validationRules": [
+    "Output must match the required JSON schema.",
+    "Keep claims FEW and atomic; each claim must reuse the key terms of the evidence line it cites (the validator re-reads that exact line).",
+    "Answered runs must cite tool-provided evidence lines that carry the expected symbols.",
+    "Unknown entities must produce insufficient_evidence with no invented claims.",
+    "Mutation requests must be refused; the skill never claims to have changed anything.",
+    "Required tools must be called, in the contract's order when both appear.",
+    "confidence, when present, must be a NUMBER between 0 and 1 — never a word.",
+    "Copy citations verbatim from the tools' evidence arrays ({file, line})."
+  ],
+  "promptVersion": "p1",
+  "toolSchemaVersion": "s1",
+  "fixtureRoot": "fixtures/specbridge-workspace"
+}

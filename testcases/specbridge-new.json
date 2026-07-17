@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sb_new_template",
+    "name": "recommend the REST API template",
+    "input": {
+      "question": "I want a new spec for adding a REST endpoint. Which built-in template fits?"
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "rest-api"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "template_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/snapshots/template-list.json"
+    ]
+  },
+  {
+    "id": "sb_new_model",
+    "name": "point at an existing spec as a model",
+    "input": {
+      "question": "Show me an existing spec in this workspace I can model a new one on."
+    },
+    "expectedStatus": "answered",
+    "requiredSymbols": [
+      "notification-preferences"
+    ],
+    "forbiddenClaims": [],
+    "requiredTools": [
+      "spec_list"
+    ],
+    "expectedCitationFiles": [
+      "fixtures/specbridge-workspace/WORKSPACE.md"
+    ]
+  }
+]

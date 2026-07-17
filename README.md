@@ -1,836 +1,339 @@
-# Agent Skill Verification Template
+# Agent Skill Verifier
 
-> A production-oriented template for building observable, replayable, and
-> verification-gated AI agent skills.
+> A model-independent quality gate for AI agent skills.
 
+Verify agent skills through repeatable eval runs, replayable artifacts,
+structured reports, and CI-friendly exit codes.
+
+[![ci](https://github.com/HelloThisWorld/agent-skill-verification-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/HelloThisWorld/agent-skill-verification-template/actions/workflows/ci.yml)
 [![skill-eval](https://github.com/HelloThisWorld/agent-skill-verification-template/actions/workflows/skill-eval.yml/badge.svg?branch=main)](https://github.com/HelloThisWorld/agent-skill-verification-template/actions/workflows/skill-eval.yml)
-![status](https://img.shields.io/badge/status-MVP-blue)
-![offline](https://img.shields.io/badge/default%20demo-offline-success)
-![language](https://img.shields.io/badge/TypeScript-Node.js-informational)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
-Related projects:
-- [Open Mind](https://github.com/HelloThisWorld/open-mind): generates source-traceable codebase artifacts
-- [open-mind-mcp-server](https://github.com/HelloThisWorld/open-mind-mcp-server): exposes those artifacts as MCP tools for agents
-- [agent-skill-verification-template](https://github.com/HelloThisWorld/agent-skill-verification-template): tests agent skills/tools with evals, metrics, traces, and replay artifacts
+```bash
+agent-skill-verifier verify \
+  --skill ./skills/calendar \
+  --cases ./evals/calendar.yaml \
+  --runs 10 \
+  --threshold 0.90
+```
 
-Most agent skills are evaluated like black boxes: run the prompt, eyeball the
-final answer, and hope it behaves consistently next time. This template treats an
-agent skill as a **production software component** — something you test repeatedly,
-validate structurally, trace, measure, replay on failure, and gate before release.
+One command runs every evaluation case N times against a model adapter,
+validates each run structurally (schema, source-grounded citations,
+unsupported claims, tool usage), and fails the build when the pass rate drops
+below your threshold. The default adapters are fully offline — no API keys, no
+network, no flaky external dependencies in CI.
 
-The default demo runs **fully offline** with a deterministic mock model. No API
-keys, no network, no paid services.
-
-> **Building your own skill?** Follow the
-> [step-by-step tutorial](#tutorial-build-and-verify-a-new-skill-from-scratch)
-> below — it walks a second skill (**`glossary`**: Wikipedia lookups rendered as
-> web pages) from an empty folder to a `PASSED` verification report, one
-> checkpoint at a time.
-
-<p align="center">
-  <img src="docs/images/report-passed.svg" alt="Agent Skill Verification report showing a 100% pass rate, all validators green, across 7 test cases" width="860">
-</p>
+This repository is both the **CLI product** and a complete
+**reference implementation**: the [reference guide](docs/reference-implementation.md)
+walks through building an observable, replayable, verification-gated skill
+from scratch.
 
 ---
 
-## The problem
+## What it verifies
 
-An agent skill should not ship just because it worked once in a demo.
-Final-output inspection is not enough. Reliable skills need:
+Every run of a skill is checked by four validators:
 
-- **repeated evaluation** (behavior varies run to run),
-- **structured validation** (schema, source-grounding, tool usage — not vibes),
-- **traces and metrics** (so you can debug and track regressions),
-- **replay artifacts** (so a failure is reproducible, not a mystery),
-- **quality gates** (so regressions fail the build, not production).
+| Validator | Checks |
+|-----------|--------|
+| `schema` | the output is structurally valid (status, answer, claims, tool calls) |
+| `citation` | every claim cites a real file and line, and cited lines actually support the claim |
+| `unsupported_claim` | no forbidden or ungrounded claims (hallucination guard) |
+| `tool_call` | required tools were used, in the contract-declared order |
 
-## What this repo demonstrates
+A **quality gate** passes only when the overall pass rate clears your
+threshold *and* every case clears its own floor (`minPassRate`), with an
+optional flaky-case-rate ceiling.
 
-- A Claude-style **skill structure** (`skills/codebase-understanding/`, `skills/glossary/`)
-- A machine-readable **skill contract** (input/output/tool/citation rules)
-- A **from-scratch tutorial**: build and verify a second skill (`glossary`) end to end
-- A **model adapter** abstraction (mock, flaky, stub — and a **live** OpenAI-compatible adapter)
-- An **eval harness** that runs each case N times
-- **Source-grounding validation** (every claim must cite `file:line`)
-- **Structured logs** (JSONL), **metrics** (Prometheus text), and **trace-like spans**
-- **Replay artifacts** for every failed run
-- A polished, self-contained **static HTML report**
-- An optional **OpenTelemetry / Prometheus / Grafana** stack (demo-level)
-- A **CI quality gate** (GitHub Actions)
+## Download
 
-Honesty note: features that are stubs or demo-level are labeled as such here and
-in `docs/`. Nothing in this README is overclaimed.
+Grab the [latest release](https://github.com/HelloThisWorld/agent-skill-verification-template/releases/latest):
 
----
+| Platform | Asset |
+|----------|-------|
+| Windows x64 | `agent-skill-verifier-v<version>-windows-x64.zip` |
+| Linux x64 | `agent-skill-verifier-v<version>-linux-x64.tar.gz` |
+| macOS x64 (Intel) | `agent-skill-verifier-v<version>-macos-x64.tar.gz` |
+| macOS arm64 (Apple silicon) | `agent-skill-verifier-v<version>-macos-arm64.tar.gz` |
+| Any platform with Node.js ≥ 18.18 | `agent-skill-verifier-v<version>-node.zip` (portable) |
 
-## Quickstart
+Every release ships `SHA256SUMS.txt`. Checksums detect corrupted or tampered
+downloads; they do not prove publisher identity. **Binaries are not
+code-signed**, so Windows SmartScreen / macOS Gatekeeper may warn on first run.
 
-```bash
-npm install
-npm run eval
-# then open the generated report:
-open reports/latest/report.html      # macOS
-# start reports/latest/report.html   # Windows
-# xdg-open reports/latest/report.html# Linux
-```
-
-To see failures, replay artifacts, and a failed gate in action:
-
-```bash
-npm run eval:flaky
-```
-
----
-
-## Tutorial: build and verify a new skill from scratch
-
-> A follow-along walkthrough. Every step names the exact file to create, the
-> exact command to run, and a **checkpoint** telling you what you should see
-> before moving on. The worked example is the **`glossary`** skill that ships in
-> this repo: input `glossary <term>` (e.g. `glossary Mexico`) → look the term up
-> on Wikipedia → output a source-grounded definition **rendered as a web page**,
-> verified 10× per term and gated in CI. Every file mentioned below exists in
-> the repo, so you can read along — or delete them and rebuild from scratch.
-
-You will fill in the template's pipeline left to right:
-
-```
-Contract ─► Fixtures ─► Tools ─► Model Adapter ─► Test Cases ─► Eval ─► Report + Gate
- (step 1)   (step 2)   (step 3)     (step 4)       (step 5)    (step 6)   (steps 7–9)
-```
-
-### Step 0 — install and confirm the baseline is green
-
-```bash
-npm install
-npm run eval        # runs the built-in codebase-understanding skill
-```
-
-**Checkpoint** — the terminal ends with `Result: PASSED` (7 cases × 10 runs).
-If it does not, fix your environment first (Node >= 18.18) before continuing.
-
-### Step 1 — declare WHAT the skill must do (the contract)
-
-Create the skill folder with four files:
-
-```
-skills/glossary/
-  skill-contract.json    ← machine-readable contract (validated with zod on load)
-  SKILL.md               ← human-readable description (Claude-style frontmatter)
-  verification-rules.md  ← how outputs are graded, in prose
-  examples.md            ← concrete input/output pairs
-```
-
-The contract is the heart of the template: it defines what a *correct answer*
-looks like without saying anything about how a model produces one. The key
-fields of [`skills/glossary/skill-contract.json`](skills/glossary/skill-contract.json):
-
-```jsonc
-{
-  "name": "glossary",
-  "input":  { "fields": [{ "name": "question", "type": "string", "required": true }] },
-  "output": { "statusValues": ["answered", "insufficient_evidence", "refused"],
-              "requires": ["status", "answer", "claims", "toolCalls"] },
-  "tools": [ { "name": "wikipedia_search", "required": true },
-             { "name": "wikipedia_fetch",  "required": true } ],
-  "toolOrder": ["wikipedia_search", "wikipedia_fetch"],
-  "citationRequirement": "Every claim must cite {file, line}; when answered, the cited line must carry the queried term.",
-  "failureBehavior": "Unknown terms return insufficient_evidence with no claims. Never fabricate.",
-  "fixtureRoot": "fixtures/wikipedia"
-}
-```
-
-| Field | What it controls |
-| --- | --- |
-| `input` / `output` | The I/O shape the **schema validator** enforces. |
-| `tools` + `toolOrder` | Which tools must exist and their required order (**tool-call validator**). |
-| `citationRequirement` | The grounding rule the **citation validator** enforces. |
-| `unsupportedClaimPolicy` / `failureBehavior` | The honesty policy (**unsupported-claim validator**). |
-| `fixtureRoot` | The only directory the skill's tools read; citations resolve against the repo root. |
-| `promptVersion` / `toolSchemaVersion` | Version stamps recorded on every run for traceability. |
-
-**Checkpoint** — the contract loads and validates:
-
-```bash
-npx tsx -e "import('./src/core/skill-contract.ts').then(({loadSkillContract}) => { const c = loadSkillContract('glossary'); console.log('contract OK:', c.name, c.version) })"
-# contract OK: glossary 1.0.0
-```
-
-### Step 2 — prepare the fixtures (the evidence the skill will cite)
-
-Skills in this template are **source-grounded**: every claim must cite a
-`file:line` under the contract's `fixtureRoot`, and the validators re-read those
-files on every run. For a Wikipedia skill that creates a tension — live pages
-change and would break reproducibility — so `glossary` resolves it the way the
-whole template works: **touch the network once, then verify offline forever.**
-
-[`scripts/build-glossary-cache.mjs`](scripts/build-glossary-cache.mjs) fetches
-each term's article intro from English Wikipedia (MediaWiki action API) and
-writes one citable snapshot per term:
-
-```bash
-npm run glossary:build-cache
-```
-
-```
-ok   Mexico                             -> Mexico (4623 chars)
-ok   South Africa                       -> South Africa (3690 chars)
-ok   Switzerland                        -> Switzerland (3864 chars)
-...
-Snapshots: 32/32 on disk (fetched 32, skipped 0).
-```
-
-Wikipedia rate-limits bursts (HTTP 429), so the script throttles, retries with
-backoff, and **resumes** — re-running skips snapshots already on disk
-(`--force` re-fetches everything). Each `fixtures/wikipedia/<term>.html` embeds
-a machine-readable `glossary-data` JSON block plus a `lede` line containing the
-**exact query term verbatim**, so the citation the adapter produces is always a
-supported one — even if Wikipedia's canonical title or opening phrasing ever
-differs from the query term.
-
-**Checkpoint** — `fixtures/wikipedia/` holds 32 `.html` snapshots plus
-`index.json`. **Commit them**: fixtures are inputs, not build products
-(`reports/` is gitignored; `fixtures/` deliberately is not).
-
-### Step 3 — implement the tools
-
-Tools are the only way a skill touches the outside world. Each implements the
-`Tool` interface from [`src/tools/tool-registry.ts`](src/tools/tool-registry.ts):
-
-```ts
-export interface Tool<A, R extends ToolResult> {
-  name: string;
-  description: string;
-  execute(args: A, ctx: ToolContext): R;   // ctx.fixtureRoot = the sandbox
-}
-```
-
-The glossary skill gets two, mirroring `repo_search`/`read_file`:
-
-- [`wikipedia-search-tool.ts`](src/tools/wikipedia-search-tool.ts) — discovery.
-  Searches the snapshot cache and returns `{title, file, line, text}` matches
-  **ready to be used directly as citations**, best-matching article first.
-- [`wikipedia-fetch-tool.ts`](src/tools/wikipedia-fetch-tool.ts) — confirmation.
-  Reads one snapshot and returns its structured article data plus `ledeLine`,
-  the 1-indexed citable line that carries the query term.
-
-Register them in the skill-aware factory in `tool-registry.ts`:
-
-```ts
-export function createToolRegistry(skillName: string, fixtureRoot: string): ToolRegistry {
-  switch (skillName) {
-    case "glossary":
-      return createGlossaryToolRegistry(fixtureRoot); // wikipedia_search + wikipedia_fetch
-    default:
-      return createDefaultToolRegistry(fixtureRoot);  // repo_search + read_file
-  }
-}
-```
-
-The registry records every invocation (order, arguments, timing, success), which
-is what feeds the tool-call validator and the replay artifacts.
-
-**Checkpoint** — invoke a tool directly:
-
-```bash
-npx tsx -e "import('./src/tools/wikipedia-search-tool.ts').then(({wikipediaSearchTool}) => { const r = wikipediaSearchTool.execute({query:'Mexico'},{fixtureRoot:'fixtures/wikipedia'}); console.log(r.summary, '| top:', r.files[0]) })"
-# 40 match(es) across 2 snapshot(s) for "Mexico" | top: fixtures/wikipedia/Mexico.html
-```
-
-(Two snapshots match because the United States article also mentions Mexico —
-the ranking puts the exact-title article first, which is what the adapter uses.)
-
-### Step 4 — implement the model adapter (HOW, measured separately)
-
-An adapter is the only place that knows how a model is called. It implements
-`ModelAdapter.generate(ctx) → SkillOutput` from
-[`src/models/model-adapter.ts`](src/models/model-adapter.ts). One property keeps
-the eval honest: **adapters receive only the question, the contract, and the
-tools — never the test case's expected answer, required symbols, or forbidden
-claims.** The model cannot peek at the grading key.
-
-[`src/models/glossary-adapter.ts`](src/models/glossary-adapter.ts) is the
-offline, deterministic reference implementation:
-
-1. Parse the term out of `glossary <term>`.
-2. Call `wikipedia_search` with the term.
-3. **No matching snapshot?** Return `insufficient_evidence` with zero claims.
-4. Otherwise `wikipedia_fetch` the best match and build the answer.
-5. Attach one claim citing `{file: <snapshot>, line: <ledeLine>}` — recomputed
-   from the fixtures on every run, never hard-coded.
-
-Register it in `model-adapter.ts` (both the name list and the factory):
-
-```ts
-export const SUPPORTED_MODELS = [ "mock", "mock-flaky", "glossary", "glossary-flaky", /* stubs */ ] as const;
-
-// in createAdapter():
-case "glossary": {
-  const { GlossaryAdapter } = await import("./glossary-adapter.js");
-  return new GlossaryAdapter();
-}
-```
-
-Also build the **flaky twin** (`glossary-flaky`, same file). It produces the
-correct output first, then deterministically perturbs it per run seed — dropped
-citations, shifted line numbers, an invalid status, reversed tool order, an
-invented uncited claim. You will use it in step 8 to prove the harness actually
-catches bad outputs; a verifier you have never seen fail is not evidence.
-
-### Step 5 — write the test cases (the grading key)
-
-Happy-path cases live in [`testcases/glossary.json`](testcases/glossary.json) —
-one per term, generated from the snapshot index so paths and symbols always
-match the cache (`node scripts/gen-glossary-testcases.mjs`):
-
-```json
-{
-  "id": "gl_Mexico",
-  "input": { "question": "glossary Mexico" },
-  "expectedStatus": "answered",
-  "requiredSymbols": ["Mexico"],
-  "forbiddenClaims": [],
-  "requiredTools": ["wikipedia_search", "wikipedia_fetch"],
-  "expectedCitationFiles": ["fixtures/wikipedia/Mexico.html"]
-}
-```
-
-| Field | Meaning |
-| --- | --- |
-| `expectedStatus` | The correct status for this input. |
-| `requiredSymbols` | Must appear verbatim on a cited line (here: the term itself). |
-| `forbiddenClaims` | Substrings that must NOT appear — hallucination tripwires. |
-| `requiredTools` | Tools that must show up in the recorded calls. |
-| `expectedCitationFiles` | Files that must be cited when answered. |
-| `minPassRate` | Optional per-case floor; defaults to the global threshold. |
-
-Negative cases live in
-[`testcases/glossary-negative.json`](testcases/glossary-negative.json) — a
-skill-specific `testcases/<skill>-negative.json` overrides the shared
-`negative-cases.json`, so the glossary skill is not graded against codebase
-questions. Fictional terms must be declined, not invented:
-
-```json
-{
-  "id": "gl_neg_wakanda",
-  "input": { "question": "glossary Wakanda" },
-  "expectedStatus": "insufficient_evidence",
-  "forbiddenClaims": ["is a country", "capital", "borders"],
-  "requiredTools": ["wikipedia_search"]
-}
-```
-
-### Step 6 — run the eval
-
-```bash
-npm run glossary          # = tsx src/cli/run-glossary.ts
-```
-
-This is the standard harness (`runEval` from `src/core/eval-runner.ts`) plus a
-skill-specific final stage that renders the web-page deliverable. Expected
-output:
-
-```
-Running glossary eval — model=glossary runs=10 threshold=0.9
-
-================= Glossary Eval Summary =================
-  Skill:                glossary v1.0.0
-  Model:                glossary (offline-deterministic)
-  Test cases:           34
-  Runs per case:        10
-  Total runs:           340
-  Pass rate:            100.0%
-  Citation valid rate:  100.0%
-  Tool error rate:      0.0%
-  Result:               PASSED
-  Report:               reports/latest/report.html
-  Web pages:            32 pages in reports/latest/glossary/ (open index.html)
-========================================================
-```
-
-Reading it: 34 cases = 32 terms + 2 negatives; each ran 10× (repeated runs are
-the point — a skill that works once is not verified). The gate passes only when
-the overall pass rate clears `--threshold` **and** every case clears its own
-floor.
-
-**Checkpoint** — `Result: PASSED`, exit code 0.
-
-### Step 7 — inspect what came out
-
-| File | What it is |
-| --- | --- |
-| `reports/latest/report.html` | Self-contained verification report (no server, no CDN). |
-| `reports/latest/glossary/index.html` | **The deliverable** — glossary index, one tile per term. |
-| `reports/latest/glossary/<term>.html` | One rendered web page per term. |
-| `reports/latest/summary.json` | Machine-readable source of truth for the run set. |
-| `reports/latest/metrics.prom` | Prometheus-format metrics. |
-| `reports/latest/structured-events.jsonl` | Structured event log (JSONL). |
-| `reports/latest/replay-artifacts/` | One JSON per failed run (empty on a green run). |
-
-The verification report — all four validators green across 340 runs:
-
-<p align="center">
-  <img src="docs/images/glossary-report.png" alt="Glossary verification report: PASSED, 100% pass rate across 340 runs, per-case table all green" width="860">
-</p>
-
-The web-page deliverable the skill was asked to produce — an index of all 32
-terms, each tile showing its own verification verdict:
-
-<p align="center">
-  <img src="docs/images/glossary-index.png" alt="Rendered glossary index page listing 32 country term tiles, each with a PASSED badge and pass rate" width="860">
-</p>
-
-Each term page renders the grounded snapshot: definition, source link, and the
-exact citation (`fixtures/wikipedia/Portugal.html:9`) the validators checked:
-
-<p align="center">
-  <img src="docs/images/glossary-card.png" alt="Rendered term page for Portugal with flag, definition, fact sheet, PASSED badge, and the file:line citation" width="860">
-</p>
-
-### Step 8 — prove failures are caught
-
-A green report only means something if the same pipeline turns red on bad
-output. That is what the flaky adapter is for:
-
-```bash
-npm run glossary:flaky
-```
-
-```
-  Pass rate:            43.2%
-  Result:               FAILED
-```
-
-<p align="center">
-  <img src="docs/images/glossary-report-failed.png" alt="Failing glossary report: 47.6% pass rate, FAILED gate, degraded validator rates, red per-case rows" width="860">
-</p>
-
-The failure breakdown maps every seeded perturbation back to the validator that
-caught it — and produces one replay artifact per failed run (193 here), each
-containing the exact input, output, tool trace, and validation verdict:
-
-| Seeded failure mode | Caught by |
-| --- | --- |
-| Citations stripped from claims | citation + unsupported-claim |
-| Citation line shifted by +7 | citation (`citation_does_not_support_claim`) |
-| Invalid status value (`"maybe"`) | schema |
-| Tool calls reversed | tool-call (`tool_order_violation`) |
-| Invented uncited claim appended | unsupported-claim |
-
-**Checkpoint** — `Result: FAILED`, a non-empty failure breakdown, and JSON files
-under `reports/latest-flaky/replay-artifacts/`.
-
-### Step 9 — lock it in (unit tests + CI gate)
-
-[`tests/glossary.test.ts`](tests/glossary.test.ts) pins the behaviors that must
-never regress: term parsing, exact-article-first search ranking, the
-multi-word-term citation rule (the lede must carry "Bosnia and Herzegovina"
-verbatim), renderer output, a 100% eval pass with negatives declining, and the
-flaky adapter's failure mix being deterministic.
-
-```bash
-npm run test     # Test Files 4 passed · Tests 28 passed
-npm run build    # tsc type-checks the whole harness
-```
-
-The CI workflow (`.github/workflows/skill-eval.yml`) runs the eval and **fails
-the build** when the gate fails — regressions stop here, not in production.
-Tighten per-case floors with `minPassRate` on individual test cases as your
-skill matures.
-
-### Recap — what you created
-
-| Artifact | File(s) | Step |
-| --- | --- | --- |
-| Contract + docs | `skills/glossary/*` | 1 |
-| Offline fixtures | `fixtures/wikipedia/*` (+ builder script) | 2 |
-| Tools | `src/tools/wikipedia-*.ts` + registry entry | 3 |
-| Adapters | `src/models/glossary-adapter.ts` + factory entry | 4 |
-| Test cases | `testcases/glossary.json`, `testcases/glossary-negative.json` | 5 |
-| CLI + deliverable | `src/cli/run-glossary.ts`, `src/skills/glossary/*` | 6–7 |
-| Regression tests | `tests/glossary.test.ts` | 9 |
-
-The harness itself — eval loop, four validators, telemetry, reporting, replay,
-gate — required **no changes** beyond registering the new skill's tools and
-adapter. That is the template working as intended.
-
----
-
-## Example terminal output
-
-<img src="docs/images/terminal-eval.svg" alt="Terminal output of npm run eval showing a 100% pass rate and a PASSED result" width="660">
-
-```
-Running eval — skill=codebase-understanding model=mock runs=10 threshold=0.9
-
-==================== Eval Summary ====================
-  Skill:                 codebase-understanding v1.0.0
-  Model:                 mock (offline-deterministic)
-  Test cases:            7
-  Runs per case:         10
-  Total runs:            70
-  Pass rate:             100.0%
-  Schema valid rate:     100.0%
-  Citation valid rate:   100.0%
-  Unsupported claim rate:0.0%
-  Tool error rate:       0.0%
-  P95 latency:           143 ms (estimated)
-  Result:                PASSED
-  Report:                reports/latest/report.html
-======================================================
-```
-
-The `mock-flaky` adapter instead produces a mixed pass rate, a `FAILED` result,
-a failure breakdown, and one replay artifact per failed run.
-
-## Report
-
-The eval writes a single self-contained `report.html` (no server, no CDN). The
-images here are rendered from real run data; open `reports/latest/report.html`
-after a run to explore the live version, including a link to every replay artifact.
-
-The passing `npm run eval` report is shown near the top of this README. Running
-`npm run eval:flaky` uses the `mock-flaky` adapter, which fails the release gate
-and produces a per-reason failure breakdown:
-
-<p align="center">
-  <img src="docs/images/report-failed.svg" alt="Failing report showing a 54.3% pass rate, a FAILED result, and a failure breakdown grouped by reason" width="860">
-</p>
-
----
-
-## Second skill: `glossary` (Wikipedia)
-
-To show the harness is not tied to one skill, the repo ships a second, fully
-verified skill: **`glossary`**. Given `glossary <term>` it looks the term up on
-Wikipedia and returns a **source-grounded definition rendered as a web page**.
-It is built file by file in the
-[tutorial above](#tutorial-build-and-verify-a-new-skill-from-scratch); this
-section summarizes the design decisions.
-
-```bash
-npm run glossary:build-cache   # once, with network: snapshot 32 terms into fixtures/wikipedia/
-npm run glossary               # offline + deterministic: verify, then render the web pages
-# open reports/latest/glossary/index.html   (the deliverable)
-# open reports/latest/report.html           (the verification report)
-```
-
-It reuses the **same** contract loader, eval loop, four validators, telemetry,
-reporting, replay artifacts, and release gate as `codebase-understanding` — only
-the skill contract, tools (`wikipedia_search` → `wikipedia_fetch`), and reference
-adapter are new. The source-grounding model transfers directly: every claim must
-cite the exact snapshot `file:line` that carries the queried term.
-
-Design choices worth noting:
-
-- **Offline-first, like the rest of the template.** The network is touched once,
-  by the cache builder; the eval and its report are then deterministic and run
-  with no network. Each snapshot embeds the article data plus a `lede` line that
-  contains the **exact query term verbatim**, so the citation the adapter
-  produces is always a supported one — even if Wikipedia's canonical title or
-  opening phrasing differs from the query term.
-- **Contract vs. model.** `glossary` is the deterministic reference adapter;
-  `glossary-flaky` perturbs it to exercise every validator (schema, citation,
-  tool-order, unsupported-claim) and a failed gate — run `npm run glossary:flaky`.
-- **One additive change to a shared validator:** the citation validator also
-  derives CJK bigrams, so the same grounding checks work for non-space-delimited
-  languages (point the cache builder at another Wikipedia language edition and
-  nothing else changes). ASCII-only text is unaffected, so
-  `codebase-understanding` behavior is unchanged.
-
-See [`skills/glossary/`](skills/glossary/) for the SKILL.md, contract, and rules.
-
----
-
-## Live model eval: running the same skill against a real model
-
-Everything above verifies the glossary skill with its **deterministic reference
-adapter** — no language model is involved. The `llm` adapter runs the **same
-contract, tools, test cases, validators, and gate against a real model** over
-the OpenAI-compatible chat API. Whether a real model is used is just a
-parameter: `--model glossary` (offline, deterministic) vs `--model llm` (live).
-
-### What each tier tests — and what its result means
-
-| | Deterministic tier (`--model glossary`) | Live tier (`--model llm`) |
-| --- | --- | --- |
-| What produces the answer | Reference adapter (rule-based code) driving the tools | A real LLM deciding which tools to call and writing the answer |
-| What a **PASS** means | The harness, contract, fixtures, tools, and validators are internally correct and reproducible | The model actually honors the skill contract: calls the required tools in order, grounds every claim in a real `file:line`, declines unknown terms |
-| What a **FAIL** means | A regression in the skill/harness code — always a bug to fix | A model reliability gap — data you use to fix prompts, pick models, or set thresholds |
-| Determinism | 100% reproducible; same input → same output | Non-deterministic; run N times and gate on pass **rate** |
-| Latency / tokens | Simulated (labeled `estimated`) | Real wall-clock and server-reported tokens (labeled `measured`) |
-| Where it belongs | CI hard gate (100% expected) | Nightly / pre-release reliability measurement (threshold, e.g. 80–90%) |
-
-The deterministic tier passing does **not** mean "a model will do this well" —
-it means the measuring instrument is sound. The live tier is the measurement.
-
-### Results on this machine, side by side
-
-Deterministic reference adapter (`npm run eval:glossary`) — the measuring
-instrument at 100%, as it must be:
-
-```
-Skill: glossary v1.0.0 · Model: glossary (offline-deterministic)
-34 cases × 10 runs = 340 runs
-Pass rate 100.0% · Schema 100.0% · Citation 100.0% · Tool errors 0.0%
-P95 latency 174 ms (estimated) · Result: PASSED
-```
-
-<p align="center">
-  <img src="docs/images/glossary-deterministic-report.png" alt="Deterministic glossary eval report: PASSED, 100% pass rate across 340 runs" width="860">
-</p>
-
-Live model (`npm run eval:llm`) — gemma-4-26B-A4B (Q4_K_M, 15.8 GB) served by
-llama.cpp on a Radeon RX 7900 XTX, grammar-constrained JSON, ctx 8192:
-
-```
-Skill: glossary v1.0.0 · Model: llm (openai-compatible-live)
-34 cases × 1 run = 34 runs
-Pass rate 97.1% · Schema 100.0% · Citation 97.1% · Tool errors 0.0% · Unsupported claims 0.0%
-P95 latency 32 728 ms (measured) · Tokens 181 746 in / 42 978 out (server-reported)
-Result: FAILED — test case "gl_Croatia" below its 80% floor
-```
-
-<p align="center">
-  <img src="docs/images/glossary-llm-report.png" alt="Live model glossary eval report: 97.1% pass rate, one citation failure, measured latency" width="860">
-</p>
-
-Reading the live result: the model followed the tool contract in every run
-(both required tools, correct order), declined both fictional terms instead of
-fabricating, and grounded 33/34 answers. The one failure is the interesting
-part — for Croatia the model **invented plausible-looking line numbers**
-(`Croatia.html:11` is an HTML `<section>` tag that says nothing about islands)
-instead of copying the citable line from the tool result, and the citation
-validator caught it: `citation_does_not_support_claim`. That is precisely the
-failure class this harness exists to detect, and why the live tier gates on a
-pass-rate threshold instead of expecting 100%.
-
-Getting here was itself a demonstration of the pipeline: the first live run
-scored **5.9%** — replay artifacts showed 30× `required_tool_not_called`
-(the adapter's prompt never told the model which tools the contract requires;
-fixed by rendering the contract's required tools + order into the system
-prompt) and the second run scored **82.3%** with 6 runs looping until
-`LLM_MAX_ROUNDS` (grammar-constrained replies were truncated at `max_tokens`;
-fixed by raising the default and feeding "shorten your reply" back on
-`finish_reason: length`). Every diagnosis came straight from
-`replay-artifacts/` and `structured-events.jsonl`, not guesswork.
-
-### How to run it
-
-Any OpenAI-compatible server works. **Nothing is hardcoded** — endpoint, model,
-and limits all come from env vars (or the `--llm-*` CLI flags):
-
-| Env var | Default | Meaning |
-| --- | --- | --- |
-| `LLM_BASE_URL` | `http://127.0.0.1:8080/v1` | OpenAI-compatible base URL. |
-| `LLM_MODEL` | *(empty)* | Model name/tag. Optional for llama.cpp; required for Ollama / remote. |
-| `LLM_API_KEY` | *(empty)* | Bearer token for remote APIs. |
-| `LLM_JSON_MODE` | `schema` | `schema` (grammar-constrained, llama.cpp) \| `object` \| `off`. Auto-downgrades on HTTP 400. |
-| `LLM_MAX_ROUNDS` | `8` | Max model turns per run. |
-| `LLM_MAX_TOKENS` | `2048` | Generation cap per turn. |
-| `LLM_TIMEOUT_MS` | `180000` | Hard per-request timeout. |
-| `LLM_TEMPERATURE` | `0` | Sampling temperature. |
-
-**Local llama.cpp** (what produced the numbers above):
+### Windows
 
 ```powershell
-$env:LLM_SERVER_EXE = "D:\path\to\llama-server.exe"
-$env:LLM_MODEL_PATH = "D:\path\to\model.gguf"
-.\scripts\start-eval-llm.ps1     # starts ONE server: ctx 8192, --parallel 1, 127.0.0.1 only
-npm run eval:llm
-.\scripts\stop-eval-llm.ps1
+Expand-Archive agent-skill-verifier-v0.1.0-windows-x64.zip -DestinationPath agent-skill-verifier
+cd agent-skill-verifier
+Get-FileHash ..\agent-skill-verifier-v0.1.0-windows-x64.zip -Algorithm SHA256   # compare with SHA256SUMS.txt
+.\agent-skill-verifier.exe --version
 ```
 
-**Local Ollama**:
+### Linux
 
 ```bash
-LLM_BASE_URL=http://127.0.0.1:11434/v1 LLM_MODEL=gemma3:27b npm run eval:llm
+curl -fsSLO https://github.com/HelloThisWorld/agent-skill-verification-template/releases/download/v0.1.0/agent-skill-verifier-v0.1.0-linux-x64.tar.gz
+curl -fsSLO https://github.com/HelloThisWorld/agent-skill-verification-template/releases/download/v0.1.0/SHA256SUMS.txt
+sha256sum -c --ignore-missing SHA256SUMS.txt
+tar -xzf agent-skill-verifier-v0.1.0-linux-x64.tar.gz
+./agent-skill-verifier --version
 ```
 
-**Remote OpenAI-compatible API** (the same adapter — just point it elsewhere):
+### macOS
 
 ```bash
-LLM_BASE_URL=https://api.example.com/v1 LLM_MODEL=some-model LLM_API_KEY=sk-... npm run eval:llm
+curl -fsSLO https://github.com/HelloThisWorld/agent-skill-verification-template/releases/download/v0.1.0/agent-skill-verifier-v0.1.0-macos-x64.tar.gz   # or -macos-arm64
+curl -fsSLO https://github.com/HelloThisWorld/agent-skill-verification-template/releases/download/v0.1.0/SHA256SUMS.txt
+shasum -a 256 -c --ignore-missing SHA256SUMS.txt
+tar -xzf agent-skill-verifier-v0.1.0-macos-x64.tar.gz
+./agent-skill-verifier --version
 ```
 
-### Resource safety (local runs)
+The binaries are ad-hoc signed at best; on first run macOS may require
+*System Settings → Privacy & Security → Open Anyway*.
 
-The live tier is designed not to exhaust the host machine:
-
-- the eval runner sends **one request at a time**; the start script pins
-  `--parallel 1`, a small **8K context** (small KV cache — the main VRAM
-  guard), a bounded thread count, and binds to `127.0.0.1` only;
-- every request has a **hard timeout**, every run a **round cap** and a
-  **generation cap** — a wedged server fails one run instead of hanging the
-  eval or pinning the GPU indefinitely;
-- the start script refuses to launch when free RAM is critically low, and
-  `LLM_NGL` lets you trade GPU offload for stability on flaky drivers;
-- run **one** model instance during an eval (do not co-load a second model).
-
----
-
-## Architecture
-
-```
-Skill Contract ─► Model Adapter ─► Eval Harness ─► Validators ─► Telemetry ─► Report ─► CI Gate
-   (what)            (how)          (run N×)      (schema,       (logs,       (html,     (fail
-                                                   citation,      spans,       json,      build
-                                                   claims,        metrics)     prom)      below
-                                                   tools)                                 threshold)
-```
-
-| Layer | Location | Responsibility |
-| --- | --- | --- |
-| Skill contract | `skills/`, `src/core/skill-contract.ts` | What the skill must do (model-independent). |
-| Model adapter | `src/models/` | How a model is called (mock / flaky / live `llm` / stubs). |
-| Tools | `src/tools/` | `repo_search`, `read_file`, recording registry. |
-| Eval harness | `src/core/eval-runner.ts` | Run each case N×, orchestrate everything. |
-| Validators | `src/validators/` | Schema, citation, unsupported-claim, tool-call. |
-| Telemetry | `src/telemetry/` | Structured logs, trace-like spans, metrics. |
-| Reporting | `src/reporting/`, `src/artifacts/` | summary.json, report.html, metrics.prom, replays. |
-| CI gate | `.github/workflows/skill-eval.yml` | Fail the build below threshold. |
-
-## Skill contract vs. model execution
-
-This is the core idea, so it is worth stating plainly:
-
-- The **skill contract is model-independent**. It describes what a correct answer
-  looks like: the output schema, the citation requirement, the unsupported-claim
-  policy, and the tool contract.
-- The **reliability profile is model-dependent and must be measured**. Different
-  models (or model versions, prompts, or tool schemas) will have different pass
-  rates, latencies, costs, and failure patterns *against the same contract*.
-
-That separation is why the model name is a first-class dimension on every metric,
-log line, and report. See `docs/model-adapters.md`.
-
-## Verification model
-
-Every run is graded by four validators (all must pass):
-
-1. **Schema** — output matches the required JSON structure.
-2. **Citation** — each cited `file:line` exists and supports its claim; required
-   symbols and files are cited. (Keyword-based for the MVP; semantic validation is
-   on the roadmap.)
-3. **Unsupported claim** — no forbidden/hallucinated claims; the model returns
-   `insufficient_evidence` instead of inventing answers; answered claims are cited.
-4. **Tool call** — required tools were called, in the contract's `toolOrder`
-   (`repo_search` before `read_file`; `wikipedia_search` before `wikipedia_fetch`).
-
-Plus: **negative cases** (must decline to answer), **repeated runs** (default 10
-per case), and **threshold gates** (overall + per-case). Details in
-`docs/verification-pipeline.md` and `skills/codebase-understanding/verification-rules.md`.
-
-## Observability model
-
-Each run produces:
-
-- **Structured logs** — `reports/latest/structured-events.jsonl` (real).
-- **Trace-like spans** — `skill.run` → tool selection/execution → output generation
-  → validations → final decision. OpenTelemetry-shaped JSON (demo telemetry; a
-  live OTLP exporter is a roadmap item).
-- **Metrics** — `reports/latest/metrics.prom` and `summary.json`. Rates are exact;
-  token/cost/latency are estimated/demo values for the mock adapters and real
-  measured/server-reported values for the live `llm` adapter (`summary.json`
-  carries a `measurement` field saying which you are looking at).
-- **Replay artifacts** — one JSON per failed run under `replay-artifacts/`.
-
-The **static report works by default**. The **Grafana stack in `observability/`
-is optional** and **OpenTelemetry integration is demo-level** unless you implement
-the exporter. See `docs/observability-model.md`.
-
----
-
-## CLI
+### Portable (any platform with Node.js ≥ 18.18)
 
 ```bash
-npm run eval -- \
-  --skill codebase-understanding \
-  --model mock \
+unzip agent-skill-verifier-v0.1.0-node.zip -d agent-skill-verifier
+node agent-skill-verifier/agent-skill-verifier.cjs --version
+# or use the bundled launchers: agent-skill-verifier.cmd (Windows) / agent-skill-verifier (POSIX)
+```
+
+## CLI commands
+
+```text
+agent-skill-verifier verify     run the eval suite and write the report bundle
+agent-skill-verifier validate   statically check a skill + cases (no runs executed)
+agent-skill-verifier replay     inspect a stored replay artifact (no model call)
+agent-skill-verifier report     convert summary.json to terminal/json/junit/html
+agent-skill-verifier --help     usage
+agent-skill-verifier --version  version
+```
+
+### verify
+
+```bash
+agent-skill-verifier verify \
+  --skill ./fixtures/valid-skill \
+  --cases ./fixtures/evals.yaml \
   --runs 10 \
-  --threshold 0.9 \
-  --output reports/latest
+  --threshold 0.90 \
+  --output ./.agent-skill-verification
 ```
 
-| Flag | Default | Meaning |
-| --- | --- | --- |
-| `--skill` | `codebase-understanding` | Skill to evaluate. |
-| `--model` | `mock` | `mock` \| `mock-flaky` \| `glossary` \| `glossary-flaky` \| `openmind` \| `openmind-flaky` \| `llm` \| `openai-stub` \| `anthropic-stub` \| `ollama-stub`. |
-| `--runs` | `10` | Runs per test case. |
-| `--threshold` | `0.9` | Release-gate pass-rate threshold (0..1). |
-| `--output` | `reports/latest` | Report output directory. |
-| `--no-gate` | (off) | Do not exit non-zero when the gate fails. |
-| `--llm-base-url` | env `LLM_BASE_URL` | Live adapter only: OpenAI-compatible base URL. |
-| `--llm-model` | env `LLM_MODEL` | Live adapter only: model name/tag. |
-| `--llm-json-mode` | env `LLM_JSON_MODE` | Live adapter only: `schema` \| `object` \| `off`. |
-| `--llm-max-rounds` | env `LLM_MAX_ROUNDS` | Live adapter only: max model turns per run. |
-| `--llm-timeout-ms` | env `LLM_TIMEOUT_MS` | Live adapter only: per-request timeout. |
+Key options: `--adapter <name>` (default `mock`), `--seed <n>` for
+deterministic mock runs, `--timeout-ms <ms>` overall budget, `--json` for
+machine-readable output (never contains ANSI codes), `--quiet` / `--verbose`,
+`--no-fail-on-threshold` to always exit 0 on completed runs,
+`--non-interactive` (accepted for CI clarity — the CLI never prompts).
 
-Whether a **real model** is involved is selected by `--model`: the offline
-adapters (`mock`, `glossary`, `openmind`, …) never call one; `--model llm`
-connects to a real model server (see
-[Live model eval](#live-model-eval-running-the-same-skill-against-a-real-model)).
-The remaining stub adapters do **not** call real APIs — they throw a clear,
-documented error. The default demo uses the offline `mock` adapter.
+All paths are resolved relative to the current working directory. The output
+directory must stay inside it.
 
-## npm scripts
+### validate
 
-| Script | Description |
-| --- | --- |
-| `npm run build` | Type-check and compile with `tsc`. |
-| `npm run test` | Run the vitest suite. |
-| `npm run eval` | Run the eval with the **mock** adapter (offline). |
-| `npm run eval:flaky` | Run with the **mock-flaky** adapter to demonstrate failures. |
-| `npm run eval:glossary` | Glossary skill × deterministic reference adapter → `reports/glossary-deterministic`. |
-| `npm run eval:llm` | Glossary skill × **live model** (`llm` adapter) → `reports/glossary-llm`. Needs a running model server. |
-| `npm run glossary` | Run the **glossary** skill eval + render the web-page deliverable (offline). |
-| `npm run glossary:flaky` | Run the glossary skill with the unstable adapter to demonstrate failures. |
-| `npm run glossary:build-cache` | Fetch the Wikipedia snapshot fixtures once (network required). |
-| `npm run clean` | Remove `dist/` and generated reports. |
-
-## Repository layout
-
-```
-skills/            Claude-style skills + machine-readable contracts
-testcases/         Happy-path and negative test cases (shared or per-skill)
-fixtures/          Sample repo + Wikipedia snapshots the skills answer from
-scripts/           Fixture cache builder, test case generator, preview server
-src/
-  core/            Types, contract loader, eval runner, thresholds
-  models/          Model adapters (mock, flaky, glossary, stubs)
-  tools/           repo_search, read_file, wikipedia_search/fetch, registry
-  skills/          Skill-specific code (glossary snapshot parser + web renderer)
-  validators/      Schema, citation, unsupported-claim, tool-call
-  telemetry/       Logger, tracer, metrics
-  reporting/       summary.json, report.html, metrics.prom writers
-  artifacts/       Replay artifacts
-  cli/             run-eval and run-glossary entry points
-observability/     Optional OTEL Collector / Prometheus / Grafana (demo)
-docs/              Design docs (verification, observability, replay, adapters)
-tests/             vitest suites
+```bash
+agent-skill-verifier validate --skill ./fixtures/valid-skill --cases ./fixtures/evals.yaml
 ```
 
-## Requirements
+Checks the skill contract, evaluation-case schema, duplicate case ids,
+expected citation files, adapter name, threshold/runs ranges, and output-path
+safety — without executing a single evaluation run.
 
-- Node.js >= 18.18 (developed on Node 22).
-- No API keys and no network for the default demo.
+### replay
 
-## Roadmap
+```bash
+agent-skill-verifier replay .agent-skill-verification/replays/case-001-run-01.json
+```
 
-Clearly future work, not implemented today:
+Replay is **stored-artifact inspection**: the artifact already contains the
+exact input, output, tool trace, and validation verdict of the recorded run,
+so failures can be understood without invoking any model. The artifact is
+schema-validated and never modified. (Deterministic model *re-execution* is
+not claimed.)
 
-- Real OpenTelemetry OTLP exporter (replace demo span JSON).
-- Provider-native adapters (e.g. Anthropic Messages API with native tool use) —
-  the OpenAI-compatible **live adapter is implemented** (`--model llm`, covering
-  llama.cpp / Ollama / OpenAI-compatible remote APIs); the remaining stubs mark
-  the provider-native variants.
-- MCP server integration for tools.
-- Claude Skill packaging examples.
-- Richer **semantic** citation validation (beyond keyword matching).
-- Committed dashboard screenshots and a model comparison matrix.
-- A small web UI for browsing runs and artifacts.
+### report
+
+```bash
+agent-skill-verifier report \
+  --input .agent-skill-verification/summary.json \
+  --format html \
+  --output report.html
+```
+
+Converts the canonical result into `terminal`, `json`, `junit`, or `html`
+without rerunning anything.
+
+## Configuration
+
+Place a `skill-verification.yaml` (or `.yml` / `.json`) in your project root,
+or point at one with `--config`:
+
+```yaml
+schemaVersion: "1.0.0"
+
+skill:
+  path: ./fixtures/valid-skill
+
+evaluation:
+  cases: ./fixtures/evals.yaml
+  runs: 10
+  threshold: 0.90
+  seed: 12345
+
+adapter:
+  name: mock
+
+output:
+  directory: .agent-skill-verification
+  formats: [json, junit, html, replay]
+
+qualityGate:
+  failOnThreshold: true
+  maximumFlakyRate: 0.05
+```
+
+Precedence: **CLI flags → configuration file → built-in defaults**.
+A copy of this example lives at [examples/skill-verification.yaml](examples/skill-verification.yaml).
+
+## Exit codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | verification passed (or informational command succeeded) |
+| 1 | verification completed but the quality gate failed |
+| 2 | invalid CLI input, configuration, skill, or evaluation cases |
+| 3 | adapter, provider, or model unavailable |
+| 4 | verification runtime failure |
+| 5 | timeout or cancellation |
+| 6 | report or artifact failure |
+
+JSON mode (`--json`) always prints the normalized result document, pass or
+fail, so CI can consume it regardless of the exit code.
+
+## Report formats
+
+`verify` writes a deterministic bundle (timestamps and measured latency aside):
+
+```text
+.agent-skill-verification/
+├── summary.json     canonical verification result (schemaVersion 1.0.0)
+├── report.html      self-contained HTML report (no external assets)
+├── junit.xml        JUnit XML for CI test-report ingestion
+├── events.jsonl     structured event log
+├── metrics.json     aggregate metrics document
+└── replays/         one replay artifact per run: <case>-run-<NN>.json
+```
+
+`summary.json` is the single source of truth; every other format can be
+regenerated from it with `agent-skill-verifier report`. Metrics the verifier
+cannot measure are `null` — never fabricated. With the offline mock adapters,
+latency/token/cost figures are clearly labeled as estimated demo values.
+
+## CI example (GitHub Actions)
+
+Pin an exact version in CI — do not download `latest` in a reproducible
+pipeline:
+
+```yaml
+jobs:
+  verify-skill:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      ASV_VERSION: 0.1.0
+      ASV_SHA256: "<sha256 of agent-skill-verifier-v0.1.0-linux-x64.tar.gz from SHA256SUMS.txt>"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download a pinned agent-skill-verifier release
+        run: |
+          curl -fsSLO "https://github.com/HelloThisWorld/agent-skill-verification-template/releases/download/v${ASV_VERSION}/agent-skill-verifier-v${ASV_VERSION}-linux-x64.tar.gz"
+          echo "${ASV_SHA256}  agent-skill-verifier-v${ASV_VERSION}-linux-x64.tar.gz" | sha256sum -c -
+          tar -xzf "agent-skill-verifier-v${ASV_VERSION}-linux-x64.tar.gz"
+
+      - name: Validate the skill (no runs)
+        run: ./agent-skill-verifier validate --skill ./skills/my-skill --cases ./evals/my-skill.yaml
+
+      - name: Verify the skill (offline mock adapter)
+        run: |
+          ./agent-skill-verifier verify \
+            --skill ./skills/my-skill \
+            --cases ./evals/my-skill.yaml \
+            --runs 10 \
+            --threshold 0.90 \
+            --output verification
+
+      - name: Upload verification reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-verification-report
+          path: verification
+```
+
+For provider-backed verification, pass credentials through GitHub secrets as
+environment variables (e.g. `LLM_BASE_URL`, `LLM_API_KEY`) — never as CLI
+arguments and never committed.
+
+## Adapters
+
+| Adapter | Type | Use |
+|---------|------|-----|
+| `mock` | offline, deterministic | default; source-grounded answers from your fixture corpus |
+| `mock-flaky` | offline, deterministic | demonstrates failure detection, flaky-case reporting, replay artifacts |
+| `glossary`, `glossary-flaky`, `openmind`, `openmind-flaky` | offline | reference-implementation demo skills |
+| `llm` | live, OpenAI-compatible | real-model verification; configure via `LLM_BASE_URL`, `LLM_MODEL`, `LLM_API_KEY`, `LLM_JSON_MODE`, `LLM_MAX_ROUNDS`, `LLM_TIMEOUT_MS` |
+| `openai-stub`, `anthropic-stub`, `ollama-stub` | stubs | integration points for your own adapters |
+
+Secrets are read from environment variables only; they are never accepted as
+CLI values, never written into reports, and never embedded in binaries.
+
+## Security
+
+- Output paths are confined to the working directory; replay file names are
+  sanitized; HTML and XML output is escaped (hostile skill/case content cannot
+  inject markup).
+- Ordinary CI runs with `contents: read`; only the release job holds
+  `contents: write`. Releases are draft-first, never overwrite an existing
+  release or asset, and publish only after every expected asset is verified.
+- See the [threat model](docs/threat-model.md) for the full analysis.
+
+## Reproducibility limitations
+
+- The `mock` adapters are fully deterministic under a fixed `--seed`; live
+  model adapters are inherently non-deterministic — expect pass-rate variance
+  and use thresholds rather than exact-match expectations.
+- `replay` inspects recorded runs; it does not re-execute a model.
+- Mock latency/token/cost metrics are labeled estimates, not measurements.
+
+## Development
+
+```bash
+npm ci
+npm run lint && npm run typecheck && npm test   # 116 tests, fully offline
+npm run cli -- verify --skill fixtures/valid-skill --cases fixtures/evals.yaml --runs 3
+npm run build:cli        # dist/cli/agent-skill-verifier.cjs (bundled)
+npm run build:standalone # dist/sea/agent-skill-verifier[.exe] via Node SEA
+npm run package:release  # dist/release/*.zip|tar.gz for this platform
+npm run release:check && npm run release:smoke
+```
+
+The reference implementation (skills, contracts, validators, observability,
+tutorial) is documented in [docs/reference-implementation.md](docs/reference-implementation.md).
+
+## Release process
+
+Releases are built by [.github/workflows/release.yml](.github/workflows/release.yml)
+on native GitHub runners with a pinned Node version, using the official
+Node.js Single Executable Application mechanism. Draft-first publication:
+assets and checksums are verified before the release goes live. See
+[docs/release-process.md](docs/release-process.md) — including how to run the
+manual build-only dry run before tagging.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+[MIT](LICENSE)

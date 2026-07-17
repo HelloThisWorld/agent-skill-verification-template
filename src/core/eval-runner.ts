@@ -1,6 +1,7 @@
-import { existsSync, readFileSync } from "node:fs";
-import { z } from "zod";
-import { loadSkillContract, skillStatusSchema, type SkillContract } from "./skill-contract.js";
+import { existsSync } from "node:fs";
+import { parseTestCases, readStructuredFile } from "./case-loader.js";
+import { VerificationTimeoutError } from "./errors.js";
+import { loadSkillContract, type SkillContract } from "./skill-contract.js";
 import { resolveFromRoot } from "./paths.js";
 import { newRunId, newTraceId } from "./run-id.js";
 import { DEMO_PRICING } from "./thresholds.js";
@@ -51,47 +52,14 @@ export interface EvalResult {
   logJsonl: string;
 }
 
-const testCaseSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  input: z.object({ question: z.string() }).passthrough(),
-  kind: z.enum(["happy", "negative"]).optional(),
-  expectedStatus: skillStatusSchema,
-  requiredSymbols: z.array(z.string()).default([]),
-  forbiddenClaims: z.array(z.string()).default([]),
-  requiredTools: z.array(z.string()).default([]),
-  expectedCitationFiles: z.array(z.string()).default([]),
-  minPassRate: z.number().min(0).max(1).optional(),
-});
-
 function errMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
 function loadTestCaseFile(relPath: string, defaultKind: "happy" | "negative"): TestCase[] {
   const abs = resolveFromRoot(relPath);
-  let raw: unknown;
-  try {
-    raw = JSON.parse(readFileSync(abs, "utf8"));
-  } catch (error) {
-    throw new Error(`Failed to read test cases at ${abs}: ${errMessage(error)}`);
-  }
-  const parsed = z.array(testCaseSchema).safeParse(raw);
-  if (!parsed.success) {
-    throw new Error(`Invalid test cases in ${relPath}:\n${parsed.error.toString()}`);
-  }
-  return parsed.data.map((tc) => ({
-    id: tc.id,
-    name: tc.name,
-    input: { ...tc.input } as SkillInput,
-    kind: tc.kind ?? defaultKind,
-    expectedStatus: tc.expectedStatus,
-    requiredSymbols: tc.requiredSymbols,
-    forbiddenClaims: tc.forbiddenClaims,
-    requiredTools: tc.requiredTools,
-    expectedCitationFiles: tc.expectedCitationFiles,
-    minPassRate: tc.minPassRate,
-  }));
+  const raw = readStructuredFile(abs, "Test cases file");
+  return parseTestCases(raw, relPath, defaultKind);
 }
 
 /**
@@ -169,6 +137,8 @@ interface AttemptParams {
   attemptIndex: number;
   rootLogger: StructuredLogger;
   modelName: string;
+  /** Optional global seed mixed into the per-attempt deterministic seed. */
+  seed?: number;
 }
 
 async function runAttempt(params: AttemptParams): Promise<RunResult> {
@@ -176,7 +146,10 @@ async function runAttempt(params: AttemptParams): Promise<RunResult> {
 
   const runId = newRunId();
   const traceId = newTraceId();
-  const seed = `${testCase.id}#${attemptIndex}`;
+  const seed =
+    params.seed === undefined
+      ? `${testCase.id}#${attemptIndex}`
+      : `${params.seed}:${testCase.id}#${attemptIndex}`;
   const startedAt = new Date().toISOString();
   const versions: RunVersions = {
     skillContractVersion: contract.version,
@@ -297,13 +270,31 @@ async function runAttempt(params: AttemptParams): Promise<RunResult> {
   };
 }
 
-export async function runEval(options: EvalOptions): Promise<EvalResult> {
-  const contract = loadSkillContract(options.skillName);
-  const testCases = loadTestCases(options.skillName);
+/** Options for running an eval over already-loaded contract, cases, and adapter. */
+export interface RunCasesOptions {
+  contract: SkillContract;
+  testCases: TestCase[];
+  adapter: ModelAdapter;
+  modelName: string;
+  runsPerCase: number;
+  threshold: number;
+  outputDir: string;
+  /** Optional global seed; identical seeds produce identical mock-adapter results. */
+  seed?: number;
+  /** Optional absolute wall-clock deadline (epoch ms). Exceeding it aborts with a timeout. */
+  deadlineMs?: number;
+}
+
+/**
+ * Core reusable entry point: run every case N times against an adapter and
+ * build the summary. The higher-level `runEval` wrapper (name-based lookup) and
+ * the CLI verification service both delegate here.
+ */
+export async function runEvalCases(options: RunCasesOptions): Promise<EvalResult> {
+  const { contract, testCases, adapter } = options;
   if (testCases.length === 0) {
-    throw new Error(`No test cases found for skill "${options.skillName}".`);
+    throw new Error(`No test cases provided for skill "${contract.name}".`);
   }
-  const adapter = await createAdapter(options.modelName);
 
   const rootLogger = StructuredLogger.create({
     skill_name: contract.name,
@@ -319,6 +310,12 @@ export async function runEval(options: EvalOptions): Promise<EvalResult> {
   const runs: RunResult[] = [];
   for (const testCase of testCases) {
     for (let attempt = 0; attempt < options.runsPerCase; attempt++) {
+      if (options.deadlineMs !== undefined && Date.now() > options.deadlineMs) {
+        throw new VerificationTimeoutError(
+          `Verification exceeded its deadline after ${runs.length} of ` +
+            `${testCases.length * options.runsPerCase} runs.`,
+        );
+      }
       runs.push(
         await runAttempt({
           adapter,
@@ -327,6 +324,7 @@ export async function runEval(options: EvalOptions): Promise<EvalResult> {
           attemptIndex: attempt,
           rootLogger,
           modelName: options.modelName,
+          seed: options.seed,
         }),
       );
     }
@@ -350,4 +348,22 @@ export async function runEval(options: EvalOptions): Promise<EvalResult> {
   });
 
   return { summary, runs, logJsonl: rootLogger.toJsonl() };
+}
+
+export async function runEval(options: EvalOptions): Promise<EvalResult> {
+  const contract = loadSkillContract(options.skillName);
+  const testCases = loadTestCases(options.skillName);
+  if (testCases.length === 0) {
+    throw new Error(`No test cases found for skill "${options.skillName}".`);
+  }
+  const adapter = await createAdapter(options.modelName);
+  return runEvalCases({
+    contract,
+    testCases,
+    adapter,
+    modelName: options.modelName,
+    runsPerCase: options.runsPerCase,
+    threshold: options.threshold,
+    outputDir: options.outputDir,
+  });
 }
