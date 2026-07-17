@@ -29,7 +29,13 @@ import { join, resolve } from "node:path";
  *   - --require-commit-match makes a manifest/HEAD mismatch fatal (used in CI)
  *   - SHA256SUMS.txt, when present, matches the archives
  *
- * Usage: node scripts/release-check.mjs [--dir dist/release] [--tag vX.Y.Z] [--require-commit-match]
+ * Usage:
+ *   node scripts/release-check.mjs [--dir dist/release] [--tag vX.Y.Z]
+ *        [--require-commit-match] [--require-assets <list>] [--tag-only]
+ *
+ * --tag-only        validate only the tag/version rules (no archives needed)
+ * --require-assets  comma list of expected asset suffixes, e.g.
+ *                   windows-x64,linux-x64,macos-x64,macos-arm64,node
  */
 
 const root = process.cwd();
@@ -43,6 +49,14 @@ function argValue(flag) {
 const dir = resolve(root, argValue("--dir") ?? "dist/release");
 const tag = argValue("--tag");
 const requireCommitMatch = argv.includes("--require-commit-match");
+const tagOnly = argv.includes("--tag-only");
+const requireAssets = argValue("--require-assets");
+
+/** Expected archive filename for an asset suffix like "windows-x64" or "node". */
+function expectedAssetName(suffix) {
+  const ext = suffix === "node" || suffix.startsWith("windows") ? "zip" : "tar.gz";
+  return `agent-skill-verifier-v${pkg.version}-${suffix}.${ext}`;
+}
 
 const errors = [];
 const warnings = [];
@@ -238,6 +252,19 @@ if (tag !== undefined) {
   }
 }
 
+if (tagOnly) {
+  if (tag === undefined) {
+    console.error("--tag-only requires --tag <vX.Y.Z>.");
+    process.exit(1);
+  }
+  if (errors.length > 0) {
+    for (const e of errors) console.error(`ERROR ${e}`);
+    process.exit(1);
+  }
+  console.log(`release-check: tag "${tag}" is valid and matches package version ${pkg.version}.`);
+  process.exit(0);
+}
+
 if (!existsSync(dir)) {
   console.error(`Release directory not found: ${dir}`);
   process.exit(1);
@@ -257,6 +284,16 @@ for (const archive of archives) {
   if (names.has(archive)) errors.push(`Duplicate asset name: ${archive}`);
   names.add(archive);
   checkArchive(archive);
+}
+
+// Every expected asset must be present, exactly once, before publication.
+if (requireAssets) {
+  for (const suffix of requireAssets.split(",").map((s) => s.trim()).filter(Boolean)) {
+    const expected = expectedAssetName(suffix);
+    if (!names.has(expected)) {
+      errors.push(`Expected release asset is missing: ${expected}`);
+    }
+  }
 }
 
 // SHA256SUMS.txt consistency (when generated).
