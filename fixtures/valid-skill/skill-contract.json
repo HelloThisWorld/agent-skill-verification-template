@@ -1,0 +1,46 @@
+{
+  "name": "valid-skill",
+  "version": "1.0.0",
+  "description": "Reference fixture skill used by CLI smoke tests: answers questions about the small billing corpus in fixtures/valid-skill/corpus with source-grounded citations.",
+  "input": {
+    "description": "A natural-language question about the billing corpus.",
+    "fields": [
+      {
+        "name": "question",
+        "type": "string",
+        "required": true,
+        "description": "The question to answer from the corpus."
+      }
+    ]
+  },
+  "output": {
+    "description": "A structured answer with citations, or an explicit insufficient_evidence/refused status.",
+    "statusValues": ["answered", "insufficient_evidence", "refused"],
+    "requires": ["status", "answer", "claims", "toolCalls"]
+  },
+  "tools": [
+    {
+      "name": "repo_search",
+      "description": "Case-insensitive substring search across the corpus.",
+      "required": true
+    },
+    {
+      "name": "read_file",
+      "description": "Read a corpus file to confirm evidence before answering.",
+      "required": false
+    }
+  ],
+  "toolOrder": ["repo_search", "read_file"],
+  "citationRequirement": "Every claim made while status=answered must cite at least one existing corpus file and line.",
+  "unsupportedClaimPolicy": "Claims must not assert facts absent from the corpus; unsupported claims fail validation.",
+  "failureBehavior": "When the corpus lacks evidence, report insufficient_evidence instead of guessing.",
+  "validationRules": [
+    "schema: output matches the skill output schema",
+    "citations: cited files exist and cited lines support the claim",
+    "unsupported-claims: no forbidden or ungrounded claims",
+    "tool-calls: required tools were used in the declared order"
+  ],
+  "promptVersion": "1.0.0",
+  "toolSchemaVersion": "1.0.0",
+  "fixtureRoot": "fixtures/valid-skill/corpus"
+}

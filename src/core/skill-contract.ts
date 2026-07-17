@@ -1,5 +1,7 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { z } from "zod";
+import { InputError } from "./errors.js";
 import { resolveFromRoot } from "./paths.js";
 
 /**
@@ -53,21 +55,41 @@ export const skillContractSchema = z.object({
 
 export type SkillContract = z.infer<typeof skillContractSchema>;
 
-/** Load and validate the contract for a named skill. */
-export function loadSkillContract(skillName: string): SkillContract {
-  const path = resolveFromRoot(`skills/${skillName}/skill-contract.json`);
+/** Name of the contract file inside a skill directory. */
+export const SKILL_CONTRACT_FILENAME = "skill-contract.json";
+
+function loadContractFile(path: string): SkillContract {
   let raw: unknown;
   try {
     raw = JSON.parse(readFileSync(path, "utf8"));
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to read skill contract at ${path}: ${message}`);
+    throw new InputError(`Failed to read skill contract at ${path}: ${message}`);
   }
   const parsed = skillContractSchema.safeParse(raw);
   if (!parsed.success) {
-    throw new Error(`Invalid skill contract at ${path}:\n${parsed.error.toString()}`);
+    throw new InputError(`Invalid skill contract at ${path}:\n${parsed.error.toString()}`);
   }
   return parsed.data;
+}
+
+/** Load and validate the contract for a named skill in the workspace `skills/` directory. */
+export function loadSkillContract(skillName: string): SkillContract {
+  return loadContractFile(resolveFromRoot(`skills/${skillName}/${SKILL_CONTRACT_FILENAME}`));
+}
+
+/** Load and validate a skill contract from an explicit skill directory path. */
+export function loadSkillContractFromDir(skillDirAbs: string): SkillContract {
+  let stats;
+  try {
+    stats = statSync(skillDirAbs);
+  } catch {
+    throw new InputError(`Skill path not found: ${skillDirAbs}`);
+  }
+  if (!stats.isDirectory()) {
+    throw new InputError(`Skill path is not a directory: ${skillDirAbs}`);
+  }
+  return loadContractFile(join(skillDirAbs, SKILL_CONTRACT_FILENAME));
 }
 
 /** Names of the tools the contract marks as required. */
