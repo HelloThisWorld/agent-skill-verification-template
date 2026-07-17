@@ -105,8 +105,17 @@ function extract(archivePath, destDir) {
       if (r.status !== 0) throw new Error(`unzip failed for ${archivePath}`);
     }
   } else {
-    const r = spawnSync("tar", ["-xzf", archivePath, "-C", destDir], { stdio: "pipe" });
-    if (r.status !== 0) throw new Error(`tar -xzf failed for ${archivePath}`);
+    // On Windows, prefer the system bsdtar: a GNU tar found on PATH (e.g. from
+    // Git Bash) misreads drive-letter paths like D:\ as remote-host specs.
+    const systemTar = "C:\\Windows\\System32\\tar.exe";
+    const tarCmd = process.platform === "win32" && existsSync(systemTar) ? systemTar : "tar";
+    const r = spawnSync(tarCmd, ["-xzf", archivePath, "-C", destDir], {
+      stdio: "pipe",
+      encoding: "utf8",
+    });
+    if (r.status !== 0) {
+      throw new Error(`tar -xzf failed for ${archivePath}: ${(r.stderr ?? "").trim()}`);
+    }
   }
 }
 
