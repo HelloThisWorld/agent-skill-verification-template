@@ -3,9 +3,9 @@
   "grants": {
     "example-analyzer": {
       "version": "1.0.0",
-      "manifestSha256": "472d1508862c35552931d41409865554de90106ca2a8cd4cc16945ec868341fd",
-      "permissionHash": "b9dcf0b068fde654722679f90f43c30110df55630e98450c691d64229fe9298f",
-      "acceptedAt": "2026-07-16T16:17:09.586Z"
+      "manifestSha256": "759a0fb87efcee07ecf85688b77affc6d702b3147dde27c9a8e26b0b47f836ec",
+      "permissionHash": "056c8a6b2585577d1d59557ac2b7690d071d1526c27cd228974f57ab4325fe58",
+      "acceptedAt": "2026-07-18T12:52:35.812Z"
     }
   }
 }

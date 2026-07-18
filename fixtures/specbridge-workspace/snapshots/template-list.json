@@ -25,7 +25,7 @@
         "identity"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -54,7 +54,7 @@
         "scheduling"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -81,7 +81,7 @@
         "quality"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -110,7 +110,7 @@
         "ux"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -139,7 +139,7 @@
         "backfill"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -168,7 +168,7 @@
         "async"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -197,7 +197,7 @@
         "benchmarking"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -226,7 +226,7 @@
         "regression-safety"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -254,7 +254,7 @@
         "backend"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,
@@ -283,7 +283,7 @@
         "defense"
       ],
       "compatibility": {
-        "specbridge": ">=0.7.0 <1.0.0",
+        "specbridge": ">=0.7.0 <2.0.0",
         "kiroLayout": "1"
       },
       "deprecated": false,

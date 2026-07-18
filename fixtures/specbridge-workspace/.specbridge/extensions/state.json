@@ -8,12 +8,12 @@
       "displayName": "example-analyzer",
       "description": "Deterministic spec diagnostics contributed by the example-analyzer analyzer extension.",
       "source": "local-archive:D:\\work\\specbridge\\examples\\extensions\\example-analyzer\\dist\\example-analyzer-1.0.0.specbridge-extension.zip",
-      "installedAt": "2026-07-16T16:17:08.561Z",
-      "archiveSha256": "4d2ed293339ac609b5a0db4e6810c4a621541e3c2c0fa850693831ea196f71d9",
-      "manifestSha256": "472d1508862c35552931d41409865554de90106ca2a8cd4cc16945ec868341fd",
-      "permissionHash": "b9dcf0b068fde654722679f90f43c30110df55630e98450c691d64229fe9298f",
+      "installedAt": "2026-07-18T12:52:34.964Z",
+      "archiveSha256": "e6e0948a315b09e53bd18997dce21888af9adbb3997fbf82955399dcf3252a19",
+      "manifestSha256": "759a0fb87efcee07ecf85688b77affc6d702b3147dde27c9a8e26b0b47f836ec",
+      "permissionHash": "056c8a6b2585577d1d59557ac2b7690d071d1526c27cd228974f57ab4325fe58",
       "entrypoint": "dist/extension.cjs",
-      "installRecordId": "extension-mrnppcnf-tl0-1"
+      "installRecordId": "extension-mrqd9zot-dl0-1"
     },
     {
       "id": "example-verifier",
@@ -22,12 +22,12 @@
       "displayName": "example-verifier",
       "description": "Verification diagnostics contributed by the example-verifier verifier extension.",
       "source": "local-archive:D:\\work\\specbridge\\examples\\extensions\\example-verifier\\dist\\example-verifier-1.0.0.specbridge-extension.zip",
-      "installedAt": "2026-07-16T16:17:10.921Z",
-      "archiveSha256": "17e78d12a74b2944983a38527e8568117d56ed53e219a5a976787bb1bed832af",
-      "manifestSha256": "b7a4c0381cfe341eeb876e243cffe6d8758c35a7702403a24e312e2332b058d5",
-      "permissionHash": "54d55c04ab9da47fbd76f9697e33413ef89bd95c56ca62c4e26a072adfa58d1a",
+      "installedAt": "2026-07-18T12:52:36.659Z",
+      "archiveSha256": "d531c9078fcbeef6573a95773eefafd409d798bac1223c83748e0229ae0225bf",
+      "manifestSha256": "94f84808acb744f31d7ba0da29ea4e2bcccee5bf08f6650a548ae15b90eaba5f",
+      "permissionHash": "71f3f7e037220ee4043e2bf1af5c631da96fb39924ae2e66c6cf18deac71532a",
       "entrypoint": "dist/extension.cjs",
-      "installRecordId": "extension-mrnppecc-bzw-1"
+      "installRecordId": "extension-mrqda0zy-q84-1"
     }
   ],
   "enabled": {
